@@ -8,6 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		896ABFE223F5E15700F3D02A /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 896ABFE123F5E15700F3D02A /* main.c */; };
+		896ABFEA23F6B02A00F3D02A /* ColumnarTranspositionCipher.c in Sources */ = {isa = PBXBuildFile; fileRef = 896ABFE923F6B02A00F3D02A /* ColumnarTranspositionCipher.c */; };
+		896ABFED23F6B8F000F3D02A /* AffineCipher.c in Sources */ = {isa = PBXBuildFile; fileRef = 896ABFEC23F6B8F000F3D02A /* AffineCipher.c */; };
+		896ABFF023F6BCBB00F3D02A /* HillCipher.c in Sources */ = {isa = PBXBuildFile; fileRef = 896ABFEF23F6BCBB00F3D02A /* HillCipher.c */; };
+		896ABFF323F8450000F3D02A /* VigenereCipher.c in Sources */ = {isa = PBXBuildFile; fileRef = 896ABFF223F8450000F3D02A /* VigenereCipher.c */; };
+		896ABFF623F8802B00F3D02A /* LetterFrequency.c in Sources */ = {isa = PBXBuildFile; fileRef = 896ABFF523F8802B00F3D02A /* LetterFrequency.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +30,16 @@
 /* Begin PBXFileReference section */
 		896ABFDE23F5E15700F3D02A /* Crypto */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Crypto; sourceTree = BUILT_PRODUCTS_DIR; };
 		896ABFE123F5E15700F3D02A /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
+		896ABFE823F6B02A00F3D02A /* ColumnarTranspositionCipher.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColumnarTranspositionCipher.h; sourceTree = "<group>"; };
+		896ABFE923F6B02A00F3D02A /* ColumnarTranspositionCipher.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ColumnarTranspositionCipher.c; sourceTree = "<group>"; };
+		896ABFEB23F6B8F000F3D02A /* AffineCipher.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AffineCipher.h; sourceTree = "<group>"; };
+		896ABFEC23F6B8F000F3D02A /* AffineCipher.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = AffineCipher.c; sourceTree = "<group>"; };
+		896ABFEE23F6BCBB00F3D02A /* HillCipher.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HillCipher.h; sourceTree = "<group>"; };
+		896ABFEF23F6BCBB00F3D02A /* HillCipher.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = HillCipher.c; sourceTree = "<group>"; };
+		896ABFF123F8450000F3D02A /* VigenereCipher.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VigenereCipher.h; sourceTree = "<group>"; };
+		896ABFF223F8450000F3D02A /* VigenereCipher.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = VigenereCipher.c; sourceTree = "<group>"; };
+		896ABFF423F87A2200F3D02A /* LetterFrequency.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LetterFrequency.h; sourceTree = "<group>"; };
+		896ABFF523F8802B00F3D02A /* LetterFrequency.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = LetterFrequency.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +73,16 @@
 			isa = PBXGroup;
 			children = (
 				896ABFE123F5E15700F3D02A /* main.c */,
+				896ABFF423F87A2200F3D02A /* LetterFrequency.h */,
+				896ABFF523F8802B00F3D02A /* LetterFrequency.c */,
+				896ABFEE23F6BCBB00F3D02A /* HillCipher.h */,
+				896ABFEF23F6BCBB00F3D02A /* HillCipher.c */,
+				896ABFEB23F6B8F000F3D02A /* AffineCipher.h */,
+				896ABFEC23F6B8F000F3D02A /* AffineCipher.c */,
+				896ABFF123F8450000F3D02A /* VigenereCipher.h */,
+				896ABFF223F8450000F3D02A /* VigenereCipher.c */,
+				896ABFE823F6B02A00F3D02A /* ColumnarTranspositionCipher.h */,
+				896ABFE923F6B02A00F3D02A /* ColumnarTranspositionCipher.c */,
 			);
 			path = Crypto;
 			sourceTree = "<group>";
@@ -119,7 +144,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				896ABFED23F6B8F000F3D02A /* AffineCipher.c in Sources */,
+				896ABFF023F6BCBB00F3D02A /* HillCipher.c in Sources */,
+				896ABFF323F8450000F3D02A /* VigenereCipher.c in Sources */,
 				896ABFE223F5E15700F3D02A /* main.c in Sources */,
+				896ABFF623F8802B00F3D02A /* LetterFrequency.c in Sources */,
+				896ABFEA23F6B02A00F3D02A /* ColumnarTranspositionCipher.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -238,20 +268,24 @@
 		896ABFE623F5E15700F3D02A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = Y7XG2VMH9T;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
 			name = Debug;
 		};
 		896ABFE723F5E15700F3D02A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = Y7XG2VMH9T;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
 			name = Release;
 		};
