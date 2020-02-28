@@ -16,6 +16,10 @@
 #include "HillCipher.h"
 #include "VigenereCipher.h"
 #include "LetterFrequency.h"
+#include "DES.h"
+#include "VDES.h"
+#include "Utils.h"
+
 
 void testBreakVigenereCipher () {
     const char text[] = "qivjukosqegnyiytxypshzewjsnsdpeybsuiranshzewjsnsdvusdvozqhasg hexhvtdrynjyirlrrnfpekjbsuhucnjyirlrrnfveylrsdgbinjyirlrrnfwi lqbsuqlisfqhhzuxytxaewhroxwvasjirxwsltyiytxontzxhjuyljvenivsd tlectpqiypinylwwmdxirosoplrgkrvytxaoswkeywlixivordrytwlewjyyn mysyzensdxeqocozkswnpjejomnlzensdqaphcozxrdjuwtfqhnjyirlrrnfj mvjbsuzsreahvgtqraqhxytxhobq";
@@ -30,9 +34,30 @@ void testBreakCaesarCipher () {
     
     breakCaesarCipher(text, textlen, 0);
 }
+void testDES () {
+  
+    const char plaintext[] = "romeoandjulietweregreatlovers";
+    const char key[] = "Z8tb;a=8";
+
+    const char iv[8] = {0};
+    
+    int plaintextlen = (int)strlen(plaintext);
+    char *ciphertext = vdes_encrypt(plaintext, &plaintextlen, key, iv);
+    print_bytes(ciphertext, 32);
+    char *decryptedtext = vdes_decrypt(ciphertext, &plaintextlen, key, iv);
+    printf("%s\n", decryptedtext);
+    //print_str(plaintext);
+    //print_str(key);
+    //print_str(decryptedtext);
+    
+    free(ciphertext);
+    free(decryptedtext);
+}
+
 
 int main(int argc, const char * argv[]) {
-    testBreakVigenereCipher();
+    //testBreakVigenereCipher();
+    testDES();
     
     return 0;
 }

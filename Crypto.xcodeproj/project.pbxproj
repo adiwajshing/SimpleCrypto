@@ -13,6 +13,9 @@
 		896ABFF023F6BCBB00F3D02A /* HillCipher.c in Sources */ = {isa = PBXBuildFile; fileRef = 896ABFEF23F6BCBB00F3D02A /* HillCipher.c */; };
 		896ABFF323F8450000F3D02A /* VigenereCipher.c in Sources */ = {isa = PBXBuildFile; fileRef = 896ABFF223F8450000F3D02A /* VigenereCipher.c */; };
 		896ABFF623F8802B00F3D02A /* LetterFrequency.c in Sources */ = {isa = PBXBuildFile; fileRef = 896ABFF523F8802B00F3D02A /* LetterFrequency.c */; };
+		89EECAE32406EB1C00040CED /* DES.c in Sources */ = {isa = PBXBuildFile; fileRef = 89EECAE22406EB1C00040CED /* DES.c */; };
+		89EECAE62407969100040CED /* Utils.c in Sources */ = {isa = PBXBuildFile; fileRef = 89EECAE52407969100040CED /* Utils.c */; };
+		89EECAE9240988A600040CED /* VDES.c in Sources */ = {isa = PBXBuildFile; fileRef = 89EECAE8240988A600040CED /* VDES.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -40,6 +43,12 @@
 		896ABFF223F8450000F3D02A /* VigenereCipher.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = VigenereCipher.c; sourceTree = "<group>"; };
 		896ABFF423F87A2200F3D02A /* LetterFrequency.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LetterFrequency.h; sourceTree = "<group>"; };
 		896ABFF523F8802B00F3D02A /* LetterFrequency.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = LetterFrequency.c; sourceTree = "<group>"; };
+		89EECAE12406EB1C00040CED /* DES.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DES.h; sourceTree = "<group>"; };
+		89EECAE22406EB1C00040CED /* DES.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = DES.c; sourceTree = "<group>"; };
+		89EECAE42407969100040CED /* Utils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Utils.h; sourceTree = "<group>"; };
+		89EECAE52407969100040CED /* Utils.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = Utils.c; sourceTree = "<group>"; };
+		89EECAE7240988A600040CED /* VDES.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VDES.h; sourceTree = "<group>"; };
+		89EECAE8240988A600040CED /* VDES.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = VDES.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,6 +92,12 @@
 				896ABFF223F8450000F3D02A /* VigenereCipher.c */,
 				896ABFE823F6B02A00F3D02A /* ColumnarTranspositionCipher.h */,
 				896ABFE923F6B02A00F3D02A /* ColumnarTranspositionCipher.c */,
+				89EECAE42407969100040CED /* Utils.h */,
+				89EECAE52407969100040CED /* Utils.c */,
+				89EECAE12406EB1C00040CED /* DES.h */,
+				89EECAE22406EB1C00040CED /* DES.c */,
+				89EECAE7240988A600040CED /* VDES.h */,
+				89EECAE8240988A600040CED /* VDES.c */,
 			);
 			path = Crypto;
 			sourceTree = "<group>";
@@ -145,8 +160,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				896ABFED23F6B8F000F3D02A /* AffineCipher.c in Sources */,
+				89EECAE62407969100040CED /* Utils.c in Sources */,
 				896ABFF023F6BCBB00F3D02A /* HillCipher.c in Sources */,
+				89EECAE32406EB1C00040CED /* DES.c in Sources */,
 				896ABFF323F8450000F3D02A /* VigenereCipher.c in Sources */,
+				89EECAE9240988A600040CED /* VDES.c in Sources */,
 				896ABFE223F5E15700F3D02A /* main.c in Sources */,
 				896ABFF623F8802B00F3D02A /* LetterFrequency.c in Sources */,
 				896ABFEA23F6B02A00F3D02A /* ColumnarTranspositionCipher.c in Sources */,
