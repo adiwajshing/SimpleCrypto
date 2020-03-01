@@ -8,8 +8,8 @@
 
 #include "DES.h"
 #include "Utils.h"
+#include "Padding.h"
 
-#include <math.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -82,7 +82,7 @@ const uint8_t FP[] = {
  shifts bits according to a permutation table
  example: {57,12,1,2} => bit 57 will now be at position 0, bit 12 at position 1 and so on
 **/
-void bit_permute (const char *bytes, char *output, const uint8_t *table, int tablelen) {
+void bit_permute (const uint8_t *bytes, uint8_t *output, const uint8_t *table, int tablelen) {
     
     int i1 = 0, b1 = 0;
     int i2 = 0, b2 = 0;
@@ -96,35 +96,16 @@ void bit_permute (const char *bytes, char *output, const uint8_t *table, int tab
         output[i1] |= bit2 << b1; // set the bit at the new position
     }
 }
-/// XORs 2 strings, outputs on the first string provided
-void xor_string(char *a, const char *b, int len)
-{
-    while (len) {
-        len -= 1;
-        a[len] ^= b[len];
-    }
-}
-/// swaps two character arrays
-void swap (char *a, char *b, int len) {
-    char tmp;
-    while (len) {
-        len -= 1;
-        tmp = a[len];
-        a[len] = b[len];
-        b[len] = tmp;
-    }
-}
-
 /// expands a 4 byte string to 6 bytes using the DES expansion permutation table
-void expansion(const char halfblock[4], char expanded[6])
+void expansion(const uint8_t halfblock[4], uint8_t expanded[6])
 {
     const uint8_t order[] = { 31, 0, 1, 2, 3, 4, 3, 4, 5, 6, 7, 8, 7, 8, 9, 10, 11, 12, 11, 12, 13, 14, 15, 16, 15, 16, 17, 18, 19, 20, 19, 20, 21, 22, 23, 24, 23, 24, 25, 26, 27, 28, 27, 28, 29, 30, 31, 0 };
     bit_permute(halfblock, expanded, order, 48);
 }
 /// Takes in the expanded half block and substitutes the bytes with the bytes from the Sbox; Returns a 4 byte string
-void substitute(char keymixed_halfblock[6], char output[DES_BLOCK_SIZE/2])
+void substitute(uint8_t keymixed_halfblock[6], uint8_t output[DES_BLOCK_SIZE/2])
 {
-    memset(output, 0, sizeof(char)*4); // clear our output
+    memset(output, 0, 4); // clear our output
     
     uint8_t row_order[2]; // the table we will use to extract the 0th & 5th bit in each 6 bit block
     uint8_t col_order[4]; // the table we will use to extract the 0th, 1st, 2nd & 3rd bit in each 6 bit block
@@ -139,8 +120,8 @@ void substitute(char keymixed_halfblock[6], char output[DES_BLOCK_SIZE/2])
         col_order[2] = 3 + 6*i; col_order[3] = 4 + 6*i;
         
         // extract the bits
-        bit_permute(keymixed_halfblock, (char *)&row, row_order, 2);
-        bit_permute(keymixed_halfblock, (char *)&col, col_order, 4);
+        bit_permute(keymixed_halfblock, &row, row_order, 2);
+        bit_permute(keymixed_halfblock, &col, col_order, 4);
         
         // move the extracted bits to the LSB position
         row >>= 6;
@@ -153,52 +134,52 @@ void substitute(char keymixed_halfblock[6], char output[DES_BLOCK_SIZE/2])
 
 }
 /// mix the expanded halfblock with a subkey
-void key_mixing(char expanded_halfblock[6], const char subkey[6])
+void key_mixing(uint8_t expanded_halfblock[6], const uint8_t subkey[6])
 {
     // Xor the expanded halfblock with the key here.
     xor_string(expanded_halfblock, subkey, 6);
 }
 /// permutes the bits of a given half block as given by the DES algorithm
-void permute(char *halfblock)
+void permute(uint8_t *halfblock)
 {
     // the order of the bits
     const uint8_t order[] = {
         15, 6, 19, 20, 28, 11, 27, 16, 0, 14, 22, 25, 4, 17, 30, 9, 1, 7, 23, 13, 31, 26, 2, 8, 18, 12, 29, 5, 21, 10, 3, 24
     };
-    char output[DES_BLOCK_SIZE/2] = {0};
+    uint8_t output[DES_BLOCK_SIZE/2] = {0};
     bit_permute(halfblock, output, order, 32);
     
-    memcpy(halfblock, output, sizeof(char) * DES_BLOCK_SIZE/2);
+    memcpy(halfblock, output, DES_BLOCK_SIZE/2);
 }
 /// produce the set of sub keys from a given key
-void des_derive_subkeys(const char *key, char subkeys[16][6])
+void des_derive_subkeys(const uint8_t *key, uint8_t subkeys[16][6])
 {
-    char k[7] = {0};
+    uint8_t k[7] = {0};
     bit_permute(key, k, PC1, 56);
 
     const int shift_table[] = {1,1,2,2,2,2,2,2,1,2,2,2,2,2,2,1};
     const uint8_t left_rotate_1[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 0, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 28};
     const uint8_t left_rotate_2[] = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 0, 1, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 28, 29};
     
-    char tmp[7];
+    uint8_t tmp[7];
     
     int i = 0;
     for (i = 0; i < 16; i++) {
         
-        memset(tmp, 0, sizeof(char) * 7);
+        memset(tmp, 0, 7);
         bit_permute(k, tmp, shift_table[i] == 1 ? left_rotate_1 : left_rotate_2, 56);
-        memcpy(k, tmp, sizeof(char) * 7);
+        memcpy(k, tmp, 7);
         
-        memset(subkeys[i], 0, sizeof(char) * 6);
+        memset(subkeys[i], 0, 6);
         bit_permute(k, subkeys[i], PC2, 48);
         
     }
 }
 /// Performs the feistal function on a given half block
-void feistel_function(char halfblock[DES_BLOCK_SIZE/2], const char subkey[6])
+void feistel_function(uint8_t halfblock[DES_BLOCK_SIZE/2], const uint8_t subkey[6])
 {
     //expand => key mix => substitute => permute
-    char expanded[6] = {0};
+    uint8_t expanded[6] = {0};
     expansion(halfblock, expanded); // expand the half block
     key_mixing(expanded, subkey); // mix with the subkey
    
@@ -206,16 +187,16 @@ void feistel_function(char halfblock[DES_BLOCK_SIZE/2], const char subkey[6])
     permute(halfblock); // finally, permute it for some confusion
 }
 /// Applies a vanilla feistel network on an eight byte block with a given subkey set
-void vanilla_feistel_network(char block[DES_BLOCK_SIZE], const char subkeys[16][6], int is_decryption)
+void vanilla_feistel_network(uint8_t block[DES_BLOCK_SIZE], const uint8_t subkeys[16][6], int is_decryption)
 {
-    char *left_half = block;
-    char *right_half = block+(DES_BLOCK_SIZE/2);
-    char tmp_rh[DES_BLOCK_SIZE/2];
+    uint8_t *left_half = block;
+    uint8_t *right_half = block+(DES_BLOCK_SIZE/2);
+    uint8_t tmp_rh[DES_BLOCK_SIZE/2];
     
-    char *tmp;
+    uint8_t *tmp;
 
     for (int i = 0; i < DES_FEISTAL_ROUNDS; i++) {
-        memcpy(tmp_rh, right_half, sizeof(char) * DES_BLOCK_SIZE/2);
+        memcpy(tmp_rh, right_half, DES_BLOCK_SIZE/2);
         feistel_function(tmp_rh, subkeys[ is_decryption ? DES_FEISTAL_ROUNDS-1-i : i ]);
         
         xor_string(left_half, tmp_rh, 4);
@@ -229,57 +210,29 @@ void vanilla_feistel_network(char block[DES_BLOCK_SIZE], const char subkeys[16][
     swap(left_half, right_half, DES_BLOCK_SIZE/2);
 }
 /// Applies Feistel network on an eight byte block as specified by DES
-void des_feistel_network(char block[DES_BLOCK_SIZE], const char subkeys[16][6], int is_decryption)
+void des_feistel_network(uint8_t block[DES_BLOCK_SIZE], const uint8_t subkeys[16][6], int is_decryption)
 {
     // perform the initial permutations
-    char permuted_block[DES_BLOCK_SIZE] = {0};
+    uint8_t permuted_block[DES_BLOCK_SIZE] = {0};
     bit_permute(block, permuted_block, IP, 64);
     
     vanilla_feistel_network(permuted_block, subkeys, is_decryption);
     
-    memset(block, 0, sizeof(char) * 8);
+    memset(block, 0, 8);
     bit_permute(permuted_block, block, FP, 64);
 }
 
-/// do chaning in CBC mode
-void chain_cbc (char *txt, const char *iv, int block_size, int offset) {
-    // if it's the first block, XOR with IV, otherwise XOR with the previous block
-    const char *v = offset == 0 ? iv : txt+offset-block_size;
-    xor_string(txt+offset, v, block_size);
-}
-
-///do PKCS5 padding in place, block_size is in bytes, updates plaintext and the new length of the plaintext
-void pad_PKCS5 (char *plaintext, int *len, int block_size) {
-    /*
-     Examples of PKCS5 padding for block length B = 8:
-
-        3 bytes: FDFDFD           --> FDFDFD0505050505
-        7 bytes: FDFDFDFDFDFDFD   --> FDFDFDFDFDFDFD01
-        8 bytes: FDFDFDFDFDFDFDFD --> FDFDFDFDFDFDFDFD0808080808080808
-    */
-
-    // example used from the CryptoSysk PKI Pro Manual, https://cryptosys.net/pki/manpki/pki_paddingschemes.html
-    
-    int pad_value = (ceilf( (float)*len / (float)block_size )*block_size) - *len;
-    
-    if (pad_value > 0) {
-        plaintext = realloc(plaintext, sizeof(char) * (*len + pad_value + 1));
-        memset(plaintext + (*len), (char)pad_value, sizeof(char) * pad_value);
-        
-        *len += pad_value;
-        
-        plaintext[*len] = 0;
-    }
-    
-}
-void pad_plaintext(char *plaintext, int *len)
+void pad_plaintext(uint8_t *plaintext, int *len)
 {
     pad_PKCS5(plaintext, len, 8);
 }
-char *des_cbc_crypt(const char *txt, int *len, const char key[DES_KEY_SIZE], const char iv[DES_BLOCK_SIZE], FiestalNetworkFunction feistal_network_func, SubKeyGenerationFunction sub_key_generator, int is_decryption)
+void unpad_plaintext (uint8_t *plaintext, int *len) {
+    unpad_PKCS5(plaintext, len);
+}
+uint8_t *des_cbc_crypt(const uint8_t *txt, int *len, const uint8_t key[DES_KEY_SIZE], const uint8_t iv[DES_BLOCK_SIZE], FiestalNetworkFunction feistal_network_func, SubKeyGenerationFunction sub_key_generator, int is_decryption)
 {
-    char *newtxt = (char *)malloc(sizeof(char) * *len);
-    memcpy(newtxt, txt, sizeof(char) * *len);
+    uint8_t *newtxt = (uint8_t *)malloc( *len );
+    memcpy(newtxt, txt, *len);
     
     if (*len % DES_BLOCK_SIZE != 0) { // if length is not a multiple of block size
         if (is_decryption) {
@@ -289,7 +242,7 @@ char *des_cbc_crypt(const char *txt, int *len, const char key[DES_KEY_SIZE], con
         }
     }
     
-    char subkeys[16][6]; // array of subkeys
+    uint8_t subkeys[16][6]; // array of subkeys
     sub_key_generator(key, subkeys);
     
     if (is_decryption) {
@@ -297,6 +250,7 @@ char *des_cbc_crypt(const char *txt, int *len, const char key[DES_KEY_SIZE], con
             feistal_network_func(newtxt+i, subkeys, 1);
             chain_cbc(newtxt, iv, 8, i);
         }
+        unpad_plaintext(newtxt, len);
     } else {
         for (int i = 0; i < *len;i += 8) {
             chain_cbc(newtxt, iv, 8, i);
@@ -307,12 +261,12 @@ char *des_cbc_crypt(const char *txt, int *len, const char key[DES_KEY_SIZE], con
     return newtxt;
     
 }
-char *des_cbc_encrypt(const char *plaintext, int *len, const char key[8], const char iv[8])
+uint8_t *des_cbc_encrypt(const uint8_t *plaintext, int *len, const uint8_t key[8], const uint8_t iv[8])
 {
     return des_cbc_crypt(plaintext, len, key, iv, des_feistel_network, des_derive_subkeys, 0);
 }
 
-char *des_cbc_decrypt(const char *ciphertext, int *len, const char key[8], const char iv[8])
+uint8_t *des_cbc_decrypt(const uint8_t *ciphertext, int *len, const uint8_t key[8], const uint8_t iv[8])
 {
     return des_cbc_crypt(ciphertext, len, key, iv, des_feistel_network, des_derive_subkeys, 1);
 }

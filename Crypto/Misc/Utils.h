@@ -14,7 +14,15 @@
 #include <string.h>
 
 void print_str(const char *str);
-void print_bytes(const char *str, int len);
+void print_bytes(const unsigned char *str, int len);
+
+void print_as_hex(const unsigned char *buff, int len);
+
+unsigned char *hex_str_to_buffer (const char *hex, int len);
+char *buffer_to_hex_str (const unsigned char *buff, int len);
+
+void xor_string(unsigned char *a, const unsigned char *b, int len);
+void swap (unsigned char *a, unsigned char *b, int len);
 
 char *get_text(const char *filename, int *rlen);
 int set_text(const char *filename, char *str, int len);

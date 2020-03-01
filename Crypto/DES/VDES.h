@@ -11,10 +11,12 @@
 
 #include "DES.h"
 
-char *vdes_encrypt(const char *plaintext, int *len, const char key[7], const char iv[8]);
-char *vdes_decrypt(const char *ciphertext, int *len, const char key[7], const char iv[8]);
+uint8_t *vdes_encrypt(const uint8_t *plaintext, int *len, const uint8_t key[7], const uint8_t iv[8]);
+uint8_t *vdes_decrypt(const uint8_t *ciphertext, int *len, const uint8_t key[7], const uint8_t iv[8]);
 
 void run_vdes_encrypt (void);
 void run_vdes_decrypt (void);
+
+void testVDES (void);
 
 #endif /* VDES_h */

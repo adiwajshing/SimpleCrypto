@@ -16,6 +16,9 @@
 		89EECAE32406EB1C00040CED /* DES.c in Sources */ = {isa = PBXBuildFile; fileRef = 89EECAE22406EB1C00040CED /* DES.c */; };
 		89EECAE62407969100040CED /* Utils.c in Sources */ = {isa = PBXBuildFile; fileRef = 89EECAE52407969100040CED /* Utils.c */; };
 		89EECAE9240988A600040CED /* VDES.c in Sources */ = {isa = PBXBuildFile; fileRef = 89EECAE8240988A600040CED /* VDES.c */; };
+		89EECAED240A2F7600040CED /* DDES.c in Sources */ = {isa = PBXBuildFile; fileRef = 89EECAEC240A2F7600040CED /* DDES.c */; };
+		89EECAF2240A66AF00040CED /* Padding.c in Sources */ = {isa = PBXBuildFile; fileRef = 89EECAF1240A66AF00040CED /* Padding.c */; };
+		89EECAF7240A6D5F00040CED /* AES.c in Sources */ = {isa = PBXBuildFile; fileRef = 89EECAF6240A6D5F00040CED /* AES.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -49,6 +52,13 @@
 		89EECAE52407969100040CED /* Utils.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = Utils.c; sourceTree = "<group>"; };
 		89EECAE7240988A600040CED /* VDES.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VDES.h; sourceTree = "<group>"; };
 		89EECAE8240988A600040CED /* VDES.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = VDES.c; sourceTree = "<group>"; };
+		89EECAEA240997A200040CED /* readme.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = readme.md; sourceTree = "<group>"; };
+		89EECAEB240A2F7600040CED /* DDES.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DDES.h; sourceTree = "<group>"; };
+		89EECAEC240A2F7600040CED /* DDES.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = DDES.c; sourceTree = "<group>"; };
+		89EECAF0240A66AF00040CED /* Padding.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Padding.h; sourceTree = "<group>"; };
+		89EECAF1240A66AF00040CED /* Padding.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = Padding.c; sourceTree = "<group>"; };
+		89EECAF5240A6D5F00040CED /* AES.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AES.h; sourceTree = "<group>"; };
+		89EECAF6240A6D5F00040CED /* AES.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = AES.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,6 +75,7 @@
 		896ABFD523F5E15700F3D02A = {
 			isa = PBXGroup;
 			children = (
+				89EECAEA240997A200040CED /* readme.md */,
 				896ABFE023F5E15700F3D02A /* Crypto */,
 				896ABFDF23F5E15700F3D02A /* Products */,
 			);
@@ -82,6 +93,17 @@
 			isa = PBXGroup;
 			children = (
 				896ABFE123F5E15700F3D02A /* main.c */,
+				89EECAEE240A2F7F00040CED /* PrimitiveCiphers */,
+				89EECAF3240A6D0700040CED /* Misc */,
+				89EECAEF240A2F9500040CED /* DES */,
+				89EECAF4240A6D4500040CED /* AES */,
+			);
+			path = Crypto;
+			sourceTree = "<group>";
+		};
+		89EECAEE240A2F7F00040CED /* PrimitiveCiphers */ = {
+			isa = PBXGroup;
+			children = (
 				896ABFF423F87A2200F3D02A /* LetterFrequency.h */,
 				896ABFF523F8802B00F3D02A /* LetterFrequency.c */,
 				896ABFEE23F6BCBB00F3D02A /* HillCipher.h */,
@@ -92,14 +114,41 @@
 				896ABFF223F8450000F3D02A /* VigenereCipher.c */,
 				896ABFE823F6B02A00F3D02A /* ColumnarTranspositionCipher.h */,
 				896ABFE923F6B02A00F3D02A /* ColumnarTranspositionCipher.c */,
-				89EECAE42407969100040CED /* Utils.h */,
-				89EECAE52407969100040CED /* Utils.c */,
+			);
+			path = PrimitiveCiphers;
+			sourceTree = "<group>";
+		};
+		89EECAEF240A2F9500040CED /* DES */ = {
+			isa = PBXGroup;
+			children = (
 				89EECAE12406EB1C00040CED /* DES.h */,
 				89EECAE22406EB1C00040CED /* DES.c */,
+				89EECAEB240A2F7600040CED /* DDES.h */,
+				89EECAEC240A2F7600040CED /* DDES.c */,
 				89EECAE7240988A600040CED /* VDES.h */,
 				89EECAE8240988A600040CED /* VDES.c */,
 			);
-			path = Crypto;
+			path = DES;
+			sourceTree = "<group>";
+		};
+		89EECAF3240A6D0700040CED /* Misc */ = {
+			isa = PBXGroup;
+			children = (
+				89EECAE42407969100040CED /* Utils.h */,
+				89EECAE52407969100040CED /* Utils.c */,
+				89EECAF0240A66AF00040CED /* Padding.h */,
+				89EECAF1240A66AF00040CED /* Padding.c */,
+			);
+			path = Misc;
+			sourceTree = "<group>";
+		};
+		89EECAF4240A6D4500040CED /* AES */ = {
+			isa = PBXGroup;
+			children = (
+				89EECAF5240A6D5F00040CED /* AES.h */,
+				89EECAF6240A6D5F00040CED /* AES.c */,
+			);
+			path = AES;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -162,12 +211,15 @@
 				896ABFED23F6B8F000F3D02A /* AffineCipher.c in Sources */,
 				89EECAE62407969100040CED /* Utils.c in Sources */,
 				896ABFF023F6BCBB00F3D02A /* HillCipher.c in Sources */,
+				89EECAF7240A6D5F00040CED /* AES.c in Sources */,
 				89EECAE32406EB1C00040CED /* DES.c in Sources */,
 				896ABFF323F8450000F3D02A /* VigenereCipher.c in Sources */,
+				89EECAED240A2F7600040CED /* DDES.c in Sources */,
 				89EECAE9240988A600040CED /* VDES.c in Sources */,
 				896ABFE223F5E15700F3D02A /* main.c in Sources */,
 				896ABFF623F8802B00F3D02A /* LetterFrequency.c in Sources */,
 				896ABFEA23F6B02A00F3D02A /* ColumnarTranspositionCipher.c in Sources */,
+				89EECAF2240A66AF00040CED /* Padding.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
