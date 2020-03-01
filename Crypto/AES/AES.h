@@ -11,6 +11,8 @@
 
 #include <stdlib.h>
 
+#define AES_BLOCK_SIZE 16
+
 enum AES_MODE {
     AES_128 = 0,
     AES_192 = 1,

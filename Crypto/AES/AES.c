@@ -22,11 +22,6 @@ const int aes_rounds_for_mode[] = {
     12, //AES 192
     14 //AES 256
 };
-const int aes_block_sizes_for_mode[] = {
-    16, //AES 128
-    16, //AES 192
-    16 //AES 256
-};
 
 const uint8_t aes_sboxes[] = {
     0x63, 0x7C, 0x77, 0x7B, 0xF2, 0x6B, 0x6F, 0xC5, 0x30, 0x01, 0x67, 0x2B, 0xFE, 0xD7, 0xAB, 0x76,
@@ -61,29 +56,18 @@ void print_inv_sboxes () {
     }
 }
 
-/*void buff_rotate_left(uint8_t *arr, int len)
-{
-    char tmp = arr[0];
-    for (int j = 1; j < len;j++) {
-        arr[j] = arr[j+1];
-    }
-    memcpy(arr, arr+i, (len-i));
-    memcpy(arr+len-i, tmp, i);
-}*/
-
 /// calculate the round constant used in key expansion
 uint32_t round_constant(uint8_t round) {
+    /// round constant values for given round
     const uint32_t rcs[] = { 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1B, 0x36, 0x6C, 0xD8, 0xAB, 0x4D, 0x9A, 0x2F, 0x5E, 0xBC, 0x63, 0xC6, 0x97, 0x35, 0x6A, 0xD4, 0xB3, 0x7D, 0xFA, 0xEF, 0xC5 };
     return rcs[round-1];
 }
 /// the grouping function used in AES
 void aes_grouping(uint8_t *in, int round) {
-    
     // rotate
     uint8_t a = *in;
-    *((uint32_t *)in) >>= 8;
+    *((uint32_t *)in) >>= 8; // cast as 32 bit integer and rotate by 8 bits (1 byte)
     in[3] = a;
-    //buff_rotate_left(in, 4, 1);
         
     for(a = 0; a < 4; a++) {
         in[a] = aes_sboxes[ in[a] ]; // substitute using s box
@@ -102,19 +86,17 @@ uint8_t *get_key_schedule (const uint8_t *key, int mode) {
     
     int i = 0, j = 0;
     for (i = 0; i < key_len_words;i++) {
-        subkeys[i] = *((uint32_t *)(key + i*4));
-        /*subkeys[i] = key[i];
-        subkeys[i] |= (uint32_t)key[i + 4] << 8;
-        subkeys[i] |= (uint32_t)key[i + 8] << 16;
-        subkeys[i] |= (uint32_t)key[i + 12] << 24;*/
+        subkeys[i] = *((uint32_t *)(key + i*4)); // copy key into first sub key
     }
-    
+    uint32_t grp;
     for (i = 1; i <= rounds;i++) {
-        uint32_t grp = subkeys[ (i-1)*key_len_words + key_len_words-1];
-        aes_grouping((uint8_t *)&grp, i);
+        // the first word in every 4 word block has to be defined using a function of the previous word & the word 3 words back
+        grp = subkeys[ (i-1)*key_len_words + key_len_words-1]; // the previous word
+        aes_grouping((uint8_t *)&grp, i); // the grouping function
         
         subkeys[i*key_len_words + 0] = subkeys[(i-1)*key_len_words + 0] ^ grp;
         for (j = 1; j < key_len_words;j++) {
+            // word(w) = w_ij = w_i(j-1) + w_(i-1)(j)
             subkeys[ i*key_len_words + j ] = subkeys[i*key_len_words + j-1] ^ subkeys[(i-1)*key_len_words + j];
         }
         
@@ -122,28 +104,28 @@ uint8_t *get_key_schedule (const uint8_t *key, int mode) {
     
     return (uint8_t *)subkeys;
 }
-void add_round_key (uint8_t *block, const uint8_t *subkey, int len) {
-    xor_string(block, subkey, len);
+void add_round_key (uint8_t *block, const uint8_t *subkey) {
+    xor_string(block, subkey, AES_BLOCK_SIZE);
 }
-void sub_bytes (uint8_t *block, int len, const uint8_t *table) {
-    
+void sub_bytes (uint8_t *block, const uint8_t *table) {
+    int len = AES_BLOCK_SIZE;
     while (len) {
         len -= 1;
         block[len] = table[ block[len] ];
     }
-    
 }
 
-void shift_rows (uint8_t *block, int len) {
+void shift_rows (uint8_t *block) {
     
     const int rows = 4;
-    int columns = len/rows;
+    const int columns = AES_BLOCK_SIZE/rows;
     
     int i = 0, j = 0, k = 0;
     uint8_t fb;
     for (i = 1; i < rows;i++) {
         
         for (j = 0; j < i;j++) {
+            // rotate to the left i times
             fb = block[i];
             for (k = 0; k < columns-1;k++) {
                 block[i + k*rows] = block[i + (k+1)*rows];
@@ -153,16 +135,17 @@ void shift_rows (uint8_t *block, int len) {
     }
     
 }
-void shift_rows_inv (uint8_t *block, int len) {
+void shift_rows_inv (uint8_t *block) {
     
     const int rows = 4;
-    int columns = len/rows;
+    int columns = AES_BLOCK_SIZE/rows;
     
     int i = 0, j = 0, k = 0;
     uint8_t lb;
     for (i = 1; i < rows;i++) {
         
         for (j = 0; j < i;j++) {
+            // rotate to the right i times
             lb = block[i + (columns-1)*rows];
             for (k = columns-1; k > 0;k--) {
                 block[i + k*rows] = block[i + (k-1)*rows];
@@ -172,79 +155,93 @@ void shift_rows_inv (uint8_t *block, int len) {
     }
     
 }
-
-void mix_columns (uint8_t *block, int len) {
-    
-    /*const int columns = len/4;
-    
-    for (int i = 0; i < 4;i++) {
-        uint8_t
-        
-    }*/
-    
+/// galois field multiplication by 2
+static inline uint8_t gmul_2(uint8_t a) {
+    return (a << 1) ^ (0x11b & -(a >> 7));
 }
-void mix_columns_inv (uint8_t *block, int len) {
+/// galois field multiplication
+uint8_t gmul (uint8_t a, uint8_t b) {
+    uint8_t p = 0;
+    while (b > 0) {
+        p ^= a & -(b & 1);         /* add a to p if the lowest bit of b is set */
+        a = gmul_2(a);                /* multiply a by 2 in the finite field */
+        b >>= 1;                   /* shift the next bit of b to the lowest position */
+    }
+    return p;
+}
+void mix_columns (uint8_t *block, const uint8_t m[4]) {
     
+    const int columns = AES_BLOCK_SIZE/4;
+    
+    uint8_t tmp[4];
+    
+    for (int i = 0; i < columns;i++) {
+        tmp[0] = block[i]; tmp[1] = block[i+4];
+        tmp[2] = block[i+8]; tmp[3] = block[i+12];
+        
+        block[i] = gmul(tmp[0], m[0]) ^ gmul(tmp[1], m[1]) ^ gmul(tmp[2], m[2]) ^ gmul(tmp[3], m[3]);
+        block[i + 4] = gmul(tmp[0], m[3]) ^ gmul(tmp[1], m[0]) ^ gmul(tmp[2], m[1]) ^ gmul(tmp[3], m[2]);
+        block[i + 8] = gmul(tmp[0], m[2]) ^ gmul(tmp[1], m[3]) ^ gmul(tmp[2], m[0]) ^ gmul(tmp[3], m[1]);
+        block[i + 12] = gmul(tmp[0], m[1]) ^ gmul(tmp[1], m[2]) ^ gmul(tmp[2], m[3]) ^ gmul(tmp[3], m[0]);
+    }
+
 }
 void aes_encrypt_block (uint8_t *block, const uint8_t *keys, int mode) {
     
-    const int block_size = aes_block_sizes_for_mode[mode];
+    const uint8_t galois_field_m[] = {2, 3, 1, 1};
     
     int rounds = aes_rounds_for_mode[mode];
     
-    add_round_key(block, keys, block_size);
+    add_round_key(block, keys);
     
     while (rounds) {
         rounds -= 1;
         
-        sub_bytes(block, block_size, aes_sboxes);
-        shift_rows(block, block_size);
+        sub_bytes(block, aes_sboxes);
+        shift_rows(block);
         
         if (rounds > 0) {
-            mix_columns(block, block_size);
+            mix_columns(block, galois_field_m);
         }
         
-        keys += block_size;
-        add_round_key(block, keys, block_size);
+        keys += AES_BLOCK_SIZE;
+        add_round_key(block, keys);
     }
     
 }
 void aes_decrypt_block (uint8_t *block, const uint8_t *keys, int mode) {
     
+    const uint8_t galois_field_m[] = {14, 11, 13, 9};
     int rounds = aes_rounds_for_mode[mode];
-    
-    const int block_size = 16;
         
     while (rounds) {
-        add_round_key(block, keys + rounds*block_size, block_size);
+        add_round_key(block, keys + rounds*AES_BLOCK_SIZE);
 
-        if (rounds < aes_rounds_for_mode[mode]-1) {
-            mix_columns_inv(block, block_size);
+        if (rounds < aes_rounds_for_mode[mode]) {
+            mix_columns(block, galois_field_m);
         }
         
-        shift_rows_inv(block, block_size);
-        sub_bytes(block, block_size, aes_sboxes_inv);
+        shift_rows_inv(block);
+        sub_bytes(block, aes_sboxes_inv);
         
         rounds -= 1;
     }
     
-    add_round_key(block, keys, block_size);
+    add_round_key(block, keys);
 }
 uint8_t *aes_cbc_encrypt (const uint8_t *plaintext, int *len, const uint8_t *key, const uint8_t *iv, int mode) {
     
     uint8_t *newtxt = malloc( *len );
     memcpy(newtxt, plaintext, *len);
     
-    const int block_size = aes_block_sizes_for_mode[mode];
-    
-    if (*len % block_size != 0) { // if length is not a multiple of block size
-        pad_PKCS5(newtxt, len, block_size);
+    if (*len % AES_BLOCK_SIZE != 0) { // if length is not a multiple of block size
+        pad_PKCS5(newtxt, len, AES_BLOCK_SIZE);
     }
     
     uint8_t *subkeys = get_key_schedule(key, mode);
     
-    for (int i = 0; i < *len;i += block_size) {
-        chain_cbc(newtxt, iv, block_size, i);
+    for (int i = 0; i < *len;i += AES_BLOCK_SIZE) {
+        chain_cbc(newtxt, iv, AES_BLOCK_SIZE, i);
         aes_encrypt_block(newtxt+i, subkeys, mode);
     }
     
@@ -257,17 +254,15 @@ uint8_t *aes_cbc_decrypt (const uint8_t *ciphertext, int *len, const uint8_t *ke
     uint8_t *newtxt = malloc( *len );
     memcpy(newtxt, ciphertext, *len);
     
-    const int block_size = aes_block_sizes_for_mode[mode];
-    
-    if (*len % block_size != 0) { // if length is not a multiple of block size
+    if (*len % AES_BLOCK_SIZE != 0) { // if length is not a multiple of block size
         return NULL; // cipher text is corrupt :/
     }
     
     uint8_t *subkeys = get_key_schedule(key, mode);
     
-    for (int i = *len - block_size; i >= 0;i -= block_size) {
+    for (int i = *len - AES_BLOCK_SIZE; i >= 0;i -= AES_BLOCK_SIZE) {
         aes_decrypt_block(newtxt+i, subkeys, mode);
-        chain_cbc(newtxt, iv, block_size, i);
+        chain_cbc(newtxt, iv, AES_BLOCK_SIZE, i);
     }
     
     unpad_PKCS5(newtxt, len);
@@ -277,9 +272,9 @@ uint8_t *aes_cbc_decrypt (const uint8_t *ciphertext, int *len, const uint8_t *ke
 }
 
 void testAES () {
-    
+        
     const uint8_t *key = hex_str_to_buffer("7750F228896EB4561B9CD67497AAD0B17750F228896EB4561B9CD67497AAD0B1", 64);
-    
+
     const char plaintext_hex[] = "27153A16906EF425D078796F71569CBEB6F2D9B55D607B9A3E23CB4B9E133A181A9D31F65A985AE9DFB6344CC90EC75B4E90A7CD0D8BCE7285161377F0FD6FCA"; // 128 bytes
     const uint8_t *plaintext = hex_str_to_buffer(plaintext_hex, 128); // 64 bytes
     int plaintextlen = 64;

@@ -4,9 +4,13 @@
 I initially wrote the vanilla DES algorithm with CBC chaining & PKCS5 padding with all the permutations (see DES.h & DES.c). 
 
 To encrypt using vanilla DES, call ``` des_cbc_encrypt(plaintext, &len, key,  iv) ```, where: 
+
 **plaintext** is the pointer to the byte array you want to encrypt.
+
 **len** is the parameter for the length (pass a reference to it, as the function will update the length of the text if padding was added)
+
 **key** is the 8 byte key
+
 **iv** is the 8 byte long IV (provide NULL to use without CBC chaining, i.e. ECB mode)
 
 For decryption, call ``` des_cbc_decrypt(ciphertext, &len, key, iv) ``` , same arguments apply.
@@ -35,14 +39,19 @@ For decryption, call ``` ddes_decrypt(ciphertext, &len, K1, K, K2) ``` , same ar
 # AES
 
 ## For HW2 1.4
-See AES.h & AES.c and run  ``` testAES(); ``` to run the encrypt the plaintext using the key mentioned in the template in AES 128 mode.
-
+See AES.h & AES.c and run  ``` testAES(); ``` to run the encrypt the plaintext using the key mentioned in the template in AES 128 mode. 
 To generally use AES encryption, you can call ``` aes_cbc_encrypt (plaintext, &len, key, iv, mode)``` where:
+
 **plaintext** is the pointer to the byte array you want to encrypt.
+
 **len** is the parameter for the length (pass a reference to it, as the function will update the length of the text if padding was added)
+
 **key** is the  key (16 bytes for AES 128, 24 bytes for AES 192, 32 bytes for AES 256)
+
 **iv** is the IV (provide NULL to use without CBC chaining, i.e. ECB mode)
+
 **mode** is the AES mode ==> AES_128, AES_192, AES_256
 
 For decryption, you can call ``` aes_cbc_decrypt (ciphertext, &len, key, iv, mode)``` where the same arguments apply except the first parameter is the ciphertext you want to decrypt.
 
+Note: the ``` mix_columns() ``` step was not present in the template, however, I have implemented it.
