@@ -45,6 +45,7 @@ int main(int argc, const char * argv[]) {
     
     print_as_hex(buff, 4);*/
     testDDES();
+    testAES();
     
     return 0;
 }

@@ -235,7 +235,7 @@ uint8_t *aes_cbc_encrypt (const uint8_t *plaintext, int *len, const uint8_t *key
     memcpy(newtxt, plaintext, *len);
     
     if (*len % AES_BLOCK_SIZE != 0) { // if length is not a multiple of block size
-        pad_PKCS7(newtxt, len, AES_BLOCK_SIZE);
+        pad_PKCS7(&newtxt, len, AES_BLOCK_SIZE);
     }
     
     uint8_t *subkeys = get_key_schedule(key, mode);
@@ -265,7 +265,7 @@ uint8_t *aes_cbc_decrypt (const uint8_t *ciphertext, int *len, const uint8_t *ke
         chain_cbc(newtxt, iv, AES_BLOCK_SIZE, i);
     }
     
-    unpad_PKCS7(newtxt, len);
+    unpad_PKCS7(&newtxt, len);
     
     free(subkeys);
     return newtxt;
