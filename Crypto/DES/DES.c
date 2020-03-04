@@ -224,10 +224,10 @@ void des_feistel_network(uint8_t block[DES_BLOCK_SIZE], const uint8_t subkeys[16
 
 void pad_plaintext(uint8_t *plaintext, int *len)
 {
-    pad_PKCS5(plaintext, len, 8);
+    pad_PKCS7(plaintext, len, 8);
 }
 void unpad_plaintext (uint8_t *plaintext, int *len) {
-    unpad_PKCS5(plaintext, len);
+    unpad_PKCS7(plaintext, len);
 }
 uint8_t *des_cbc_crypt(const uint8_t *txt, int *len, const uint8_t key[DES_KEY_SIZE], const uint8_t iv[DES_BLOCK_SIZE], FiestalNetworkFunction feistal_network_func, SubKeyGenerationFunction sub_key_generator, int is_decryption)
 {

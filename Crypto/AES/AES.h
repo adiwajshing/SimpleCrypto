@@ -20,6 +20,7 @@ enum AES_MODE {
 };
 
 uint8_t *aes_cbc_encrypt (const uint8_t *plaintext, int *len, const uint8_t *key, const uint8_t *iv, int mode);
+uint8_t *aes_cbc_decrypt (const uint8_t *plaintext, int *len, const uint8_t *key, const uint8_t *iv, int mode);
 
 void testAES (void);
 

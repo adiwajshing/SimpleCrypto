@@ -14,8 +14,8 @@
 #include <stdlib.h>
 
 
-///do PKCS5 padding in place, block_size is in bytes, updates plaintext and the new length of the plaintext
-void pad_PKCS5 (uint8_t *plaintext, int *len, int block_size) {
+///do PKCS7 padding in place, block_size is in bytes, updates plaintext and the new length of the plaintext
+void pad_PKCS7 (uint8_t *plaintext, int *len, uint8_t block_size) {
     /*
      Examples of PKCS5 padding for block length B = 8:
 
@@ -27,18 +27,18 @@ void pad_PKCS5 (uint8_t *plaintext, int *len, int block_size) {
     // example used from the CryptoSysk PKI Pro Manual, https://cryptosys.net/pki/manpki/pki_paddingschemes.html
     
     int pad_value = (ceilf( (float)*len / (float)block_size )*block_size) - *len;
-    
-    if (pad_value > 0) {
-        plaintext = realloc(plaintext, (*len + pad_value + 1));
-        memset(plaintext + (*len), pad_value, pad_value);
-        
-        *len += pad_value;
-        
-        plaintext[*len] = 0;
+    if (pad_value == 0) {
+        pad_value = block_size;
     }
     
+    plaintext = realloc(plaintext, *len + pad_value);
+    memset(plaintext + (*len), pad_value, pad_value);
+    
+    *len += pad_value;
+    
+    plaintext[*len] = 0;
 }
-void unpad_PKCS5 (uint8_t *plaintext, int *len) {
+void unpad_PKCS7 (uint8_t *plaintext, int *len) {
     
     int count = 0;
     while (plaintext[*len - count - 1] == plaintext[*len - 1]) {
