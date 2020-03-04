@@ -44,7 +44,7 @@ int main(int argc, const char * argv[]) {
     buff_rotate_left_2(buff, 4, 2);
     
     print_as_hex(buff, 4);*/
-    testAES();
+    testDDES();
     
     return 0;
 }

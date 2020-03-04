@@ -222,13 +222,6 @@ void des_feistel_network(uint8_t block[DES_BLOCK_SIZE], const uint8_t subkeys[16
     bit_permute(permuted_block, block, FP, 64);
 }
 
-void pad_plaintext(uint8_t *plaintext, int *len)
-{
-    pad_PKCS7(plaintext, len, 8);
-}
-void unpad_plaintext (uint8_t *plaintext, int *len) {
-    unpad_PKCS7(plaintext, len);
-}
 uint8_t *des_cbc_crypt(const uint8_t *txt, int *len, const uint8_t key[DES_KEY_SIZE], const uint8_t iv[DES_BLOCK_SIZE], FiestalNetworkFunction feistal_network_func, SubKeyGenerationFunction sub_key_generator, int is_decryption)
 {
     uint8_t *newtxt = (uint8_t *)malloc( *len );
@@ -238,7 +231,7 @@ uint8_t *des_cbc_crypt(const uint8_t *txt, int *len, const uint8_t key[DES_KEY_S
         if (is_decryption) {
             return NULL; // return NULL as the cipher text is corrupt
         } else {
-            pad_plaintext(newtxt, len); // pad it as necessary
+            pad_PKCS7(&newtxt, len, 8); // pad it as necessary
         }
     }
     
@@ -250,7 +243,7 @@ uint8_t *des_cbc_crypt(const uint8_t *txt, int *len, const uint8_t key[DES_KEY_S
             feistal_network_func(newtxt+i, subkeys, 1);
             chain_cbc(newtxt, iv, 8, i);
         }
-        unpad_plaintext(newtxt, len);
+        unpad_PKCS7(&newtxt, len);
     } else {
         for (int i = 0; i < *len;i += 8) {
             chain_cbc(newtxt, iv, 8, i);
