@@ -15,61 +15,6 @@
 #include <assert.h>
 #include <time.h>
 
-/// Miller & Robin probabalistic  prime checking
-/*int is_prolly_prime (mpz_t n, unsigned long k) {
-	mpz_t a, x, d;
-	unsigned long r = 0, i = 0;
-	
-	mpz_sub_ui(d, n, 1);
-	while (mpz_even_p(d)) {
-		mpz_div_ui(d, d, 2);
-		r += 1;
-	}
-	
-	gmp_randstate_t rand_state;
-	gmp_randinit_mt(rand_state);
-	
-	while (k > 0) {
-		k -= 1;
-		
-		mpz_urandomm(a, rand_state, n);
-		
-		mpz_powm(x, a, d, n);
-		mpz_add_ui(x, x, 1);
-		if (mpz_cmp_ui(x, 2) == 0 || mpz_cmp(x, n) == 0) {
-			continue;
-		}
-		mpz_sub_ui(x, x, 1);
-		
-		for (i = 1; i < r;i++) {
-			mpz_powm_ui(x, x, 2, n);
-			mpz_add_ui(x, x, 1);
-			if (mpz_cmp(x, n) == 0) {
-				i = -1;
-				break;
-			}
-		}
-		if (i > 0) {
-			return 0;
-		}
-	}
-	gmp_randclear(rand_state);
-	return 1;
-}*/
-void gen_prime (mpz_t n, unsigned long seed, unsigned int bitlen) {
-	gmp_randstate_t rand_state;
-	gmp_randinit_default(rand_state);
-	gmp_randseed_ui(rand_state, seed);
-
-	do {
-		
-		mpz_urandomb(n, rand_state, bitlen);
-		mpz_setbit(n, bitlen-1);
-		if (mpz_even_p(n)) {
-			mpz_sub_ui(n, n, 1);
-		}
-	} while (!mpz_probab_prime_p(n, 10));
-}
 void RSA_key_init (RSAKeyPair *key) {
 	mpz_init(key->n);
 	mpz_init(key->e);
@@ -136,7 +81,7 @@ uint8_t* RSA_crypt (const uint8_t *m, int *len, mpz_t e, mpz_t n, const unsigned
 	uint8_t *buffer = malloc( *len ); // temp buffer
 	memcpy(buffer, m, *len);
 	if (encrypt) {
-		pad_PKCS1(&buffer, len, block_size); // pad
+		pad_PKCS7Ext(&buffer, len, block_size, block_size-1); // pad
 	}
 	
 	const int blocks = *len / block_size; // number of blocks
@@ -157,7 +102,7 @@ uint8_t* RSA_crypt (const uint8_t *m, int *len, mpz_t e, mpz_t n, const unsigned
 	mpz_clear(tmp);
 	
 	if (!encrypt) {
-		unpad_PKCS1(&buffer, len, block_size); // unpad on decryption
+		unpad_PKCS7Ext(&buffer, len, block_size, block_size-1); // unpad on decryption
 	}
 	
 	return buffer;
@@ -182,6 +127,7 @@ void testRSA () {
 	
 	for (int i = 0; i < 10;i++) {
 		int bitlen = 8*((rand() % 512) + 8);
+		mpz_init(plaintexts[i]);
 		mpz_urandomb(plaintexts[i], rand_state, bitlen);
 		mpz_setbit(plaintexts[i], bitlen-1);
 	}
@@ -209,3 +155,46 @@ void testRSA () {
 		mpz_clear(plaintexts[i]);
 	}
 }
+
+
+/// Miller & Robin probabalistic  prime checking (not needed as GMP already has implements it)
+/*int is_prolly_prime (mpz_t n, unsigned long k) {
+	mpz_t a, x, d;
+	unsigned long r = 0, i = 0;
+	
+	mpz_sub_ui(d, n, 1);
+	while (mpz_even_p(d)) {
+		mpz_div_ui(d, d, 2);
+		r += 1;
+	}
+	
+	gmp_randstate_t rand_state;
+	gmp_randinit_mt(rand_state);
+	
+	while (k > 0) {
+		k -= 1;
+		
+		mpz_urandomm(a, rand_state, n);
+		
+		mpz_powm(x, a, d, n);
+		mpz_add_ui(x, x, 1);
+		if (mpz_cmp_ui(x, 2) == 0 || mpz_cmp(x, n) == 0) {
+			continue;
+		}
+		mpz_sub_ui(x, x, 1);
+		
+		for (i = 1; i < r;i++) {
+			mpz_powm_ui(x, x, 2, n);
+			mpz_add_ui(x, x, 1);
+			if (mpz_cmp(x, n) == 0) {
+				i = -1;
+				break;
+			}
+		}
+		if (i > 0) {
+			return 0;
+		}
+	}
+	gmp_randclear(rand_state);
+	return 1;
+}*/

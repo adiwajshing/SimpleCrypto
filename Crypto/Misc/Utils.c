@@ -174,3 +174,18 @@ double measure (void (*function)(void), int iterations) {
 	
 	return total_time;
 }
+
+
+void gen_prime (mpz_t n, unsigned long seed, unsigned int bitlen) {
+	gmp_randstate_t rand_state;
+	gmp_randinit_default(rand_state);
+	gmp_randseed_ui(rand_state, seed);
+
+	do {
+		mpz_urandomb(n, rand_state, bitlen);
+		mpz_setbit(n, bitlen-1);
+		if (mpz_even_p(n)) {
+			mpz_sub_ui(n, n, 1);
+		}
+	} while (!mpz_probab_prime_p(n, 20));
+}

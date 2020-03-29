@@ -49,8 +49,7 @@ void unpad_PKCS7 (uint8_t **plaintext, int *len) {
     }
     
 }
-void pad_PKCS1 (uint8_t **plaintext, int *len, int block_size) {
-	int u_block_size = block_size-1;
+void pad_PKCS7Ext (uint8_t **plaintext, int *len, int block_size, int u_block_size) {
 	pad_PKCS7(plaintext, len, u_block_size);
 	
 	int blocks = ceil( (*len)/(double)u_block_size );
@@ -63,16 +62,12 @@ void pad_PKCS1 (uint8_t **plaintext, int *len, int block_size) {
 		blocks -= 1;
 		memcpy(tmp, (*plaintext) + blocks*u_block_size, u_block_size);
 		memcpy((*plaintext) + blocks*block_size, tmp, u_block_size);
-		for (int i = 0; i < block_size-u_block_size;i++) {
-			(*plaintext)[ (blocks+1)*block_size - 1 - i] = 0;
-		}
 		
+		memset(*plaintext + (blocks+1)*block_size - (block_size-u_block_size), 0, block_size-u_block_size);		
 	}
 	
 }
-void unpad_PKCS1 (uint8_t **ciphertext, int *len, int block_size) {
-	//*block = realloc(block, len-1);
-	int u_block_size = block_size-1;
+void unpad_PKCS7Ext (uint8_t **ciphertext, int *len, int block_size, int u_block_size) {
 	int blocks = (*len)/block_size;
 	
 	uint8_t tmp[u_block_size];

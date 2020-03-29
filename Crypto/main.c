@@ -26,6 +26,7 @@
 #include "AES.h"
 #include "RSA.h"
 #include "ASN1.h"
+#include "ElGamal.h"
 
 void testBreakVigenereCipher () {
     const char text[] = "qivjukosqegnyiytxypshzewjsnsdpeybsuiranshzewjsnsdvusdvozqhasg hexhvtdrynjyirlrrnfpekjbsuhucnjyirlrrnfveylrsdgbinjyirlrrnfwi lqbsuqlisfqhhzuxytxaewhroxwvasjirxwsltyiytxontzxhjuyljvenivsd tlectpqiypinylwwmdxirosoplrgkrvytxaoswkeywlixivordrytwlewjyyn mysyzensdxeqocozkswnpjejomnlzensdqaphcozxrdjuwtfqhnjyirlrrnfj mvjbsuzsreahvgtqraqhxytxhobq";
@@ -52,6 +53,7 @@ int main(int argc, const char * argv[]) {
 	//char* args2[] = { "-keygenerator", "-encrypt" };
 	//runRSAProgram(1, args2);
 	//measure(&rsa_key_gen, 10);
+	testElGamal();
 	
 	return 0;
     //return runRSAProgram(argc, argv);

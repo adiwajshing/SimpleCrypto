@@ -11,7 +11,8 @@
 		891ED42A242F70E300284F9F /* libgmp.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 891ED429242F70E300284F9F /* libgmp.dylib */; };
 		891ED42E2430837700284F9F /* ASN1.c in Sources */ = {isa = PBXBuildFile; fileRef = 891ED42D2430837700284F9F /* ASN1.c */; };
 		891ED43024308C6E00284F9F /* UtilsBase64.c in Sources */ = {isa = PBXBuildFile; fileRef = 891ED42F24308C6E00284F9F /* UtilsBase64.c */; };
-		891ED4352430BFF700284F9F /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 896ABFE123F5E15700F3D02A /* main.c */; };
+		891ED4392430D26300284F9F /* ElGamal.c in Sources */ = {isa = PBXBuildFile; fileRef = 891ED4382430D26300284F9F /* ElGamal.c */; };
+		891ED43E2430F45500284F9F /* ElGamalProgram.c in Sources */ = {isa = PBXBuildFile; fileRef = 891ED43A2430F0C900284F9F /* ElGamalProgram.c */; };
 		896ABFEA23F6B02A00F3D02A /* ColumnarTranspositionCipher.c in Sources */ = {isa = PBXBuildFile; fileRef = 896ABFE923F6B02A00F3D02A /* ColumnarTranspositionCipher.c */; };
 		896ABFED23F6B8F000F3D02A /* AffineCipher.c in Sources */ = {isa = PBXBuildFile; fileRef = 896ABFEC23F6B8F000F3D02A /* AffineCipher.c */; };
 		896ABFF023F6BCBB00F3D02A /* HillCipher.c in Sources */ = {isa = PBXBuildFile; fileRef = 896ABFEF23F6BCBB00F3D02A /* HillCipher.c */; };
@@ -47,6 +48,10 @@
 		891ED42D2430837700284F9F /* ASN1.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ASN1.c; sourceTree = "<group>"; };
 		891ED42F24308C6E00284F9F /* UtilsBase64.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = UtilsBase64.c; sourceTree = "<group>"; };
 		891ED4312430B0B500284F9F /* RSAProgram.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = RSAProgram.c; sourceTree = "<group>"; };
+		891ED4372430D26300284F9F /* ElGamal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ElGamal.h; sourceTree = "<group>"; };
+		891ED4382430D26300284F9F /* ElGamal.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ElGamal.c; sourceTree = "<group>"; };
+		891ED43A2430F0C900284F9F /* ElGamalProgram.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ElGamalProgram.c; sourceTree = "<group>"; };
+		891ED43F2430FA4600284F9F /* RSAProgram */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = RSAProgram; sourceTree = "<group>"; };
 		896ABFDE23F5E15700F3D02A /* Crypto */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Crypto; sourceTree = BUILT_PRODUCTS_DIR; };
 		896ABFE123F5E15700F3D02A /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		896ABFE823F6B02A00F3D02A /* ColumnarTranspositionCipher.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColumnarTranspositionCipher.h; sourceTree = "<group>"; };
@@ -105,9 +110,19 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		891ED4362430D24800284F9F /* ElGamal */ = {
+			isa = PBXGroup;
+			children = (
+				891ED4372430D26300284F9F /* ElGamal.h */,
+				891ED4382430D26300284F9F /* ElGamal.c */,
+			);
+			path = ElGamal;
+			sourceTree = "<group>";
+		};
 		896ABFD523F5E15700F3D02A = {
 			isa = PBXGroup;
 			children = (
+				891ED43F2430FA4600284F9F /* RSAProgram */,
 				89EECAEA240997A200040CED /* readme.md */,
 				896ABFE023F5E15700F3D02A /* Crypto */,
 				896ABFDF23F5E15700F3D02A /* Products */,
@@ -129,11 +144,13 @@
 				891ED42B242F7B8000284F9F /* Crypto.entitlements */,
 				896ABFE123F5E15700F3D02A /* main.c */,
 				891ED4312430B0B500284F9F /* RSAProgram.c */,
+				891ED43A2430F0C900284F9F /* ElGamalProgram.c */,
 				891ED423242F398B00284F9F /* number_theory.h */,
 				89EECAEE240A2F7F00040CED /* PrimitiveCiphers */,
 				89EECAF3240A6D0700040CED /* Misc */,
 				89EECAEF240A2F9500040CED /* DES */,
 				89EECAF4240A6D4500040CED /* AES */,
+				891ED4362430D24800284F9F /* ElGamal */,
 				891ED424242F6E7C00284F9F /* RSA */,
 			);
 			path = Crypto;
@@ -252,7 +269,7 @@
 				896ABFF023F6BCBB00F3D02A /* HillCipher.c in Sources */,
 				891ED427242F6EA500284F9F /* RSA.c in Sources */,
 				89EECAF7240A6D5F00040CED /* AES.c in Sources */,
-				891ED4352430BFF700284F9F /* main.c in Sources */,
+				891ED43E2430F45500284F9F /* ElGamalProgram.c in Sources */,
 				89EECAE32406EB1C00040CED /* DES.c in Sources */,
 				896ABFF323F8450000F3D02A /* VigenereCipher.c in Sources */,
 				89EECAED240A2F7600040CED /* DDES.c in Sources */,
@@ -260,6 +277,7 @@
 				89EECAE9240988A600040CED /* VDES.c in Sources */,
 				896ABFF623F8802B00F3D02A /* LetterFrequency.c in Sources */,
 				891ED43024308C6E00284F9F /* UtilsBase64.c in Sources */,
+				891ED4392430D26300284F9F /* ElGamal.c in Sources */,
 				896ABFEA23F6B02A00F3D02A /* ColumnarTranspositionCipher.c in Sources */,
 				89EECAF2240A66AF00040CED /* Padding.c in Sources */,
 			);

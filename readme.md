@@ -1,8 +1,11 @@
-# RSA
+# ElGamal (HW3 1.10)
 
-## For HW3 1.9
+To view the implementation of ElGamal, please refer to ElGamal.h & ElGamal.c. There is also a unit test present in the files. It can work with 300 or 512 bit modes.
+However, for a simple example, please refer to ElGamalProgram.c.
 
-To run any RSA related function, please ensure that you have the GMP library installed on your computer. I have also provided a complied binary in the project (RSAProgram) to run what is required of in the question. However, if you so wish to see the code please refer to RSAProgram.c for the running, ASN1.c for the implentation of the ASN.1 protocol & RSA.c for the implementation of RSA. The program, by default uses RSA 1024, however, it can be recomplied for RSA 512 or RSA 2048 as well.
+# RSA (HW3 1.9)
+
+To run any RSA related function, please ensure that you have the GMP library installed on your computer. I have also provided a complied binary in the project (RSAProgram) to run what is required of in the question. However, if you so wish to see the code please refer to RSAProgram.c for the running, ASN1.h & ASN1.c for the implentation of the ASN.1 protocol, RSA.h &  RSA.c for the implementation of RSA. The program, by default uses RSA 1024, however, it can be recomplied for RSA 512 or RSA 2048 as well. A unit test for RSA are also present in RSA.c
 
 1. To generate keys, call ./RSAProgram -keygenerator
 2. To encrypt plaintext.txt, call ./RSAProgram -encrypt
@@ -20,6 +23,7 @@ The benchmarks for different versions of RSA are the following:
 8. time taken: 0.008040
 9. time taken: 0.005892
 10. time taken: 0.020896
+
 average time: 0.011288
 
 ### RSA 2048
@@ -33,6 +37,7 @@ average time: 0.011288
 8. time taken: 0.088416
 9. time taken: 0.137585
 10. time taken: 0.085261
+
 average time: 0.091124
 
 ### RSA 4096
@@ -46,6 +51,7 @@ average time: 0.091124
 8. time taken: 0.892993
 9. time taken: 1.117289
 10. time taken: 1.403269
+
 average time: 1.575074
 
 # DES
