@@ -13,6 +13,10 @@
 
 void pad_PKCS7 (uint8_t **plaintext, int *len, uint8_t block_size);
 void unpad_PKCS7 (uint8_t **plaintext, int *len);
+
+void pad_PKCS1 (uint8_t **plaintext, int *len, int block_size);
+void unpad_PKCS1 (uint8_t **ciphertext, int *len, int block_size);
+
 void chain_cbc (uint8_t *txt, const uint8_t *iv, int block_size, int offset);
 
 #endif /* Padding_h */

@@ -49,6 +49,43 @@ void unpad_PKCS7 (uint8_t **plaintext, int *len) {
     }
     
 }
+void pad_PKCS1 (uint8_t **plaintext, int *len, int block_size) {
+	int u_block_size = block_size-1;
+	pad_PKCS7(plaintext, len, u_block_size);
+	
+	int blocks = ceil( (*len)/(double)u_block_size );
+
+	*len = blocks * block_size;
+	*plaintext = realloc(*plaintext, *len);
+	
+	uint8_t tmp[u_block_size];
+	while (blocks > 0) {
+		blocks -= 1;
+		memcpy(tmp, (*plaintext) + blocks*u_block_size, u_block_size);
+		memcpy((*plaintext) + blocks*block_size, tmp, u_block_size);
+		for (int i = 0; i < block_size-u_block_size;i++) {
+			(*plaintext)[ (blocks+1)*block_size - 1 - i] = 0;
+		}
+		
+	}
+	
+}
+void unpad_PKCS1 (uint8_t **ciphertext, int *len, int block_size) {
+	//*block = realloc(block, len-1);
+	int u_block_size = block_size-1;
+	int blocks = (*len)/block_size;
+	
+	uint8_t tmp[u_block_size];
+	for (int i = 1; i < blocks;i++) {
+		memcpy(tmp, (*ciphertext) + i*block_size, u_block_size);
+		memcpy((*ciphertext) + i*u_block_size, tmp, u_block_size);
+	}
+	
+	*len = blocks * u_block_size;
+	*ciphertext = realloc(*ciphertext, *len);
+	
+	unpad_PKCS7(ciphertext, len);
+}
 
 /// do chaning in CBC mode
 void chain_cbc (uint8_t *txt, const uint8_t *iv, int block_size, int offset) {

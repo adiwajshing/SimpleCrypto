@@ -46,15 +46,15 @@ uint8_t *vdes_decrypt(const uint8_t *ciphertext, int *len, const uint8_t key[7],
 
 void run_vdes_crypt (int is_decryption) {
     
-    int textlen = 0, keylen = 0;
+    size_t textlen = 0, keylen = 0;
     
-    char *text = get_text( is_decryption ? "ciphertext.txt" : "plaintext.txt", &textlen);
-    char *key = get_text("key.txt", &keylen);
+    uint8_t *text = get_text( is_decryption ? "ciphertext.txt" : "plaintext.txt", &textlen, FILE_MODE_UTF8);
+    uint8_t *key = get_text("key.txt", &keylen, FILE_MODE_UTF8);
     
-    uint8_t *newtext = vdes_crypt((uint8_t *)text, &textlen, (uint8_t *)key, vdes_default_iv, is_decryption);
+    uint8_t *newtext = vdes_crypt(text, (int *)&textlen, key, vdes_default_iv, is_decryption);
     
     char *filename = is_decryption ? "plaintext.txt" : "ciphertext.txt";
-    set_text(filename, (char *)newtext, textlen);
+    set_text(filename, newtext, textlen, FILE_MODE_UTF8);
     printf("saved file as: %s", filename);
     free(newtext);
 }

@@ -8,6 +8,7 @@
 
 #include "Utils.h"
 #include <stdio.h>
+#include <time.h>
 
 void print_str(const char *str) {
     print_bytes((unsigned char *)str, (int)(str ? strlen(str) : 0));
@@ -94,10 +95,8 @@ void swap (uint8_t *a, uint8_t *b, int len) {
     }
 }
 
-
-
 /// Reads till the EOF; str => the pointer in which the buffer will be stored (provide NULL), rlen => the length of the buffer
-char *get_text(const char *filename, int *rlen)
+uint8_t *get_text(const char *filename, size_t *rlen, int mode)
 {
     FILE *file = fopen(filename, "r");
     if (!file) {
@@ -109,23 +108,69 @@ char *get_text(const char *filename, int *rlen)
     
     char *str = malloc( sizeof(char) * (*rlen + 1));
     str[*rlen] = 0;
+	fseek(file, 0, SEEK_SET);
+	
     if (fread(str, *rlen, 1, file) != 1) {
         free(str);
         return NULL;
     }
-    
     fclose(file);
-    return str;
+	
+	if (mode == FILE_MODE_HEX) {
+		uint8_t *str2 = hex_str_to_buffer(str,(int)*rlen);
+		*rlen /= 3;
+		free(str);
+		return str2;
+	}
+	if (mode == FILE_MODE_BASE64) {
+		uint8_t *str2 = b64_decode(str, rlen);
+		free(str);
+		return str2;
+	}
+	
+    return (uint8_t *)str;
 }
-int set_text(const char *filename, char *str, int len)
+int set_text(const char *filename, uint8_t *str, size_t len, int mode)
 {
     FILE *file = fopen(filename, "w");
     if (!file) {
         return -1;
     }
-    
-    if (fwrite(str, sizeof(char), len, file) != 1) {
+	char *buff = (char *)str;
+	if (mode == FILE_MODE_HEX) {
+		buff = buffer_to_hex_str(str, (int)len);
+		len = strlen(buff);
+	}
+	if (mode == FILE_MODE_BASE64) {
+		buff = b64_encode(str, len);
+		len = strlen(buff);
+	}
+	
+    if (fwrite(buff, sizeof(char), len, file) != 1) {
+		if (mode != FILE_MODE_UTF8)
+			free(buff);
         return -1;
     }
+	if (mode != FILE_MODE_UTF8)
+		free(buff);
     return 0;
+}
+
+double measure (void (*function)(void), int iterations) {
+	
+	double total_time = 0, time;
+	clock_t start, end;
+	for (int i = 0; i < iterations;i++) {
+		start = clock();
+		(*function)();
+		end = clock();
+		
+		time = ((double)(end-start)) / CLOCKS_PER_SEC;
+		total_time += time;
+		printf("%d. time taken: %lf\n", i+1, time);
+	}
+	total_time /= iterations;
+	printf("average time: %lf\n", total_time);
+	
+	return total_time;
 }

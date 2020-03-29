@@ -1,3 +1,53 @@
+# RSA
+
+## For HW3 1.9
+
+To run any RSA related function, please ensure that you have the GMP library installed on your computer. I have also provided a complied binary in the project (RSAProgram) to run what is required of in the question. However, if you so wish to see the code please refer to RSAProgram.c for the running, ASN1.c for the implentation of the ASN.1 protocol & RSA.c for the implementation of RSA. The program, by default uses RSA 1024, however, it can be recomplied for RSA 512 or RSA 2048 as well.
+
+1. To generate keys, call ./RSAProgram -keygenerator
+2. To encrypt plaintext.txt, call ./RSAProgram -encrypt
+2. To decrypt ciphertext.txt, call ./RSAProgram -decrypt.
+
+The benchmarks for different versions of RSA are the following:
+### RSA 1024
+1. time taken: 0.004163
+2. time taken: 0.004677
+3. time taken: 0.010959
+4. time taken: 0.009929
+5. time taken: 0.021239
+6. time taken: 0.011216
+7. time taken: 0.015868
+8. time taken: 0.008040
+9. time taken: 0.005892
+10. time taken: 0.020896
+average time: 0.011288
+
+### RSA 2048
+1. time taken: 0.122571
+2. time taken: 0.094352
+3. time taken: 0.120993
+4. time taken: 0.085912
+5. time taken: 0.052626
+6. time taken: 0.063667
+7. time taken: 0.059860
+8. time taken: 0.088416
+9. time taken: 0.137585
+10. time taken: 0.085261
+average time: 0.091124
+
+### RSA 4096
+1. time taken: 0.620837
+2. time taken: 0.806106
+3. time taken: 1.491062
+4. time taken: 0.837068
+5. time taken: 1.649042
+6. time taken: 1.519799
+7. time taken: 5.413277
+8. time taken: 0.892993
+9. time taken: 1.117289
+10. time taken: 1.403269
+average time: 1.575074
+
 # DES
 
 ## For HW2 1.7
