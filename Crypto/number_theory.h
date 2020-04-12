@@ -50,11 +50,48 @@ long naive_totient (long num) {
 	}
 	return count;
 }
-/// solve a linear diophantine written in the form, ax+by = c
+/// solve a linear diophantine written in the form, ax+by = c and print out the triplets
 void solve_linear_diophantine (long a, long b, long c) {
-	if (c != 1) {
-		
+	typedef struct Triplet {
+		long r, u, v;
+	} Triplet;
+	Triplet t1 = {0,0,0}, t2 = {0,0,0};
+	long bsign = 1;
+
+	if (a >= 0) {
+		t1.r = a;
+		t1.u = 1;
+	} else {
+		t1.r = -a;
+		t1.u = -1;
 	}
+	if (b >= 0) {
+		t2.r = b;
+		t2.v = 1;
+	} else {
+		t2.r = -b;
+		t2.v = -1;
+		bsign = -1;
+	}
+	Triplet t3;
+	
+	printf("(%ld, %ld, %ld)\n", t1.r, t1.u, t1.v);
+	printf("(%ld, %ld, %ld)\n", t2.r, t2.u, t2.v);
+	
+	do {
+		t3.r = t1.r % t2.r;
+		long q = t1.r/t2.r;
+		
+		t3.u = t1.u + bsign*q*t2.u;
+		t3.v = t1.v + bsign*q*t2.v;
+		
+		printf("(%ld, %ld, %ld)\n", t3.r, t3.u, t3.v);
+		
+		t1 = t2;
+		t2 = t3;
+		
+	} while (t2.r > 0);
+	
 }
 /// find all factors of a given n in O(n) time
 unsigned long* factorize_naive (unsigned long n, unsigned long *len) {

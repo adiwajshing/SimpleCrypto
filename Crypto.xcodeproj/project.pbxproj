@@ -12,12 +12,14 @@
 		891ED42E2430837700284F9F /* ASN1.c in Sources */ = {isa = PBXBuildFile; fileRef = 891ED42D2430837700284F9F /* ASN1.c */; };
 		891ED43024308C6E00284F9F /* UtilsBase64.c in Sources */ = {isa = PBXBuildFile; fileRef = 891ED42F24308C6E00284F9F /* UtilsBase64.c */; };
 		891ED4392430D26300284F9F /* ElGamal.c in Sources */ = {isa = PBXBuildFile; fileRef = 891ED4382430D26300284F9F /* ElGamal.c */; };
-		891ED43E2430F45500284F9F /* ElGamalProgram.c in Sources */ = {isa = PBXBuildFile; fileRef = 891ED43A2430F0C900284F9F /* ElGamalProgram.c */; };
 		896ABFEA23F6B02A00F3D02A /* ColumnarTranspositionCipher.c in Sources */ = {isa = PBXBuildFile; fileRef = 896ABFE923F6B02A00F3D02A /* ColumnarTranspositionCipher.c */; };
 		896ABFED23F6B8F000F3D02A /* AffineCipher.c in Sources */ = {isa = PBXBuildFile; fileRef = 896ABFEC23F6B8F000F3D02A /* AffineCipher.c */; };
 		896ABFF023F6BCBB00F3D02A /* HillCipher.c in Sources */ = {isa = PBXBuildFile; fileRef = 896ABFEF23F6BCBB00F3D02A /* HillCipher.c */; };
 		896ABFF323F8450000F3D02A /* VigenereCipher.c in Sources */ = {isa = PBXBuildFile; fileRef = 896ABFF223F8450000F3D02A /* VigenereCipher.c */; };
 		896ABFF623F8802B00F3D02A /* LetterFrequency.c in Sources */ = {isa = PBXBuildFile; fileRef = 896ABFF523F8802B00F3D02A /* LetterFrequency.c */; };
+		89AE995224420AA60087AB5C /* ElGamalSign.c in Sources */ = {isa = PBXBuildFile; fileRef = 89AE995124420AA60087AB5C /* ElGamalSign.c */; };
+		89AE995624430F160087AB5C /* sha-256.c in Sources */ = {isa = PBXBuildFile; fileRef = 89AE995524430F160087AB5C /* sha-256.c */; };
+		89AE9957244329B80087AB5C /* ElGamalProgram.c in Sources */ = {isa = PBXBuildFile; fileRef = 891ED43A2430F0C900284F9F /* ElGamalProgram.c */; };
 		89EECAE32406EB1C00040CED /* DES.c in Sources */ = {isa = PBXBuildFile; fileRef = 89EECAE22406EB1C00040CED /* DES.c */; };
 		89EECAE62407969100040CED /* Utils.c in Sources */ = {isa = PBXBuildFile; fileRef = 89EECAE52407969100040CED /* Utils.c */; };
 		89EECAE9240988A600040CED /* VDES.c in Sources */ = {isa = PBXBuildFile; fileRef = 89EECAE8240988A600040CED /* VDES.c */; };
@@ -64,6 +66,9 @@
 		896ABFF223F8450000F3D02A /* VigenereCipher.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = VigenereCipher.c; sourceTree = "<group>"; };
 		896ABFF423F87A2200F3D02A /* LetterFrequency.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LetterFrequency.h; sourceTree = "<group>"; };
 		896ABFF523F8802B00F3D02A /* LetterFrequency.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = LetterFrequency.c; sourceTree = "<group>"; };
+		89AE995124420AA60087AB5C /* ElGamalSign.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ElGamalSign.c; sourceTree = "<group>"; };
+		89AE995424430F160087AB5C /* sha-256.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "sha-256.h"; sourceTree = "<group>"; };
+		89AE995524430F160087AB5C /* sha-256.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "sha-256.c"; sourceTree = "<group>"; };
 		89EECAE12406EB1C00040CED /* DES.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DES.h; sourceTree = "<group>"; };
 		89EECAE22406EB1C00040CED /* DES.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = DES.c; sourceTree = "<group>"; };
 		89EECAE42407969100040CED /* Utils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Utils.h; sourceTree = "<group>"; };
@@ -115,6 +120,7 @@
 			children = (
 				891ED4372430D26300284F9F /* ElGamal.h */,
 				891ED4382430D26300284F9F /* ElGamal.c */,
+				89AE995124420AA60087AB5C /* ElGamalSign.c */,
 			);
 			path = ElGamal;
 			sourceTree = "<group>";
@@ -152,8 +158,18 @@
 				89EECAF4240A6D4500040CED /* AES */,
 				891ED4362430D24800284F9F /* ElGamal */,
 				891ED424242F6E7C00284F9F /* RSA */,
+				89AE995324430EE70087AB5C /* SHA256 */,
 			);
 			path = Crypto;
+			sourceTree = "<group>";
+		};
+		89AE995324430EE70087AB5C /* SHA256 */ = {
+			isa = PBXGroup;
+			children = (
+				89AE995524430F160087AB5C /* sha-256.c */,
+				89AE995424430F160087AB5C /* sha-256.h */,
+			);
+			path = SHA256;
 			sourceTree = "<group>";
 		};
 		89EECAEE240A2F7F00040CED /* PrimitiveCiphers */ = {
@@ -266,13 +282,15 @@
 			files = (
 				896ABFED23F6B8F000F3D02A /* AffineCipher.c in Sources */,
 				89EECAE62407969100040CED /* Utils.c in Sources */,
+				89AE9957244329B80087AB5C /* ElGamalProgram.c in Sources */,
+				89AE995224420AA60087AB5C /* ElGamalSign.c in Sources */,
 				896ABFF023F6BCBB00F3D02A /* HillCipher.c in Sources */,
 				891ED427242F6EA500284F9F /* RSA.c in Sources */,
 				89EECAF7240A6D5F00040CED /* AES.c in Sources */,
-				891ED43E2430F45500284F9F /* ElGamalProgram.c in Sources */,
 				89EECAE32406EB1C00040CED /* DES.c in Sources */,
 				896ABFF323F8450000F3D02A /* VigenereCipher.c in Sources */,
 				89EECAED240A2F7600040CED /* DDES.c in Sources */,
+				89AE995624430F160087AB5C /* sha-256.c in Sources */,
 				891ED42E2430837700284F9F /* ASN1.c in Sources */,
 				89EECAE9240988A600040CED /* VDES.c in Sources */,
 				896ABFF623F8802B00F3D02A /* LetterFrequency.c in Sources */,

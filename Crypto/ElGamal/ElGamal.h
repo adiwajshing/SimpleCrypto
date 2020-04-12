@@ -31,8 +31,21 @@ void ElGamal_key_gen (ElGamalKeyPair *key, unsigned int modulo_size, unsigned lo
 /// free all memory in the RSAKeyPair structure
 void ElGamal_key_free (ElGamalKeyPair *key);
 
+/// encrypt a given plaintexttext using ElGamal
 uint8_t *ElGamal_encrypt (const uint8_t *plaintext, size_t *len, mpz_t g, mpz_t h, mpz_t q);
+/// decrypt a given ElGamal encrypted ciphertext
 uint8_t *ElGamal_decrypt (const uint8_t *ciphertext, size_t *len, mpz_t a, mpz_t q);
+
+/// sign a plaintext using ElGamal; set hash_sha256 = 1 to hash the plaintext before signing
+uint8_t *ElGamal_signature (const uint8_t *plaintext, size_t *len, mpz_t g, mpz_t a, mpz_t q, int hash_sha256);
+/// verify a given ElGamal signature is valid
+int ElGamal_sign_verify_mpz (mpz_t m, mpz_t r, mpz_t s, mpz_t h, mpz_t q, mpz_t g);
+/// verify a given ElGamal signature is valid; set hash_sha256 = 1 to hash the plaintext before verifying the sign
+int ElGamal_sign_verify (const uint8_t *plaintext, size_t plaintextlen, const uint8_t *sign, mpz_t h, mpz_t q, mpz_t g, int hash_sha256);
+/// generate an existential forgery in the given ElGamal scheme; sets r, s & m to be an existential forgery
+void ElGamal_generate_existential_forge (mpz_t r, mpz_t s, mpz_t m, mpz_t h, mpz_t q, mpz_t g, unsigned long seed);
+
+void ElGamal_get_block_size (int *block_size, int *u_block_size, mpz_t q);
 
 void testElGamal (void);
 #endif /* ElGamal_h */

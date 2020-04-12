@@ -28,7 +28,6 @@ int check_primitive_root (mpz_t g, mpz_t n, mpz_t factors[2]) {
 	mpz_clear(tmp);
 	return 1;
 }
-/// generate a prime q, where q = 2p + 1 & also generate g, a primitive root of q
 void generate_prime_and_root (mpz_t g, mpz_t q, unsigned int modulo_size, unsigned long seed) {
 	
 	do {
@@ -49,6 +48,9 @@ void generate_prime_and_root (mpz_t g, mpz_t q, unsigned int modulo_size, unsign
 	do {
 		mpz_sub_ui(g, g, 2); // keep subtracting 2
 	} while (check_primitive_root(g, q, factors)); // and checking for primitive root
+	
+	mpz_clear(factors[0]);
+	mpz_clear(factors[1]);
 }
 void ElGamal_key_init (ElGamalKeyPair *key) {
 	mpz_init(key->q);
@@ -63,12 +65,15 @@ void ElGamal_key_gen (ElGamalKeyPair *key, unsigned int modulo_size, unsigned lo
 	}
 	
 	generate_prime_and_root(key->g, key->q, modulo_size, seed); // generate g & q
+	mpz_powm_ui(key->g, key->g, 2, key->q); // g = g^2 mod q
 	
 	gmp_randstate_t rand_state;
 	gmp_randinit_default(rand_state);
 	gmp_randseed_ui(rand_state, seed);
 	
 	mpz_urandomm(key->a, rand_state, key->q); // choose a random 'a' between [1,...,(q-1)]
+	mpz_div_ui(key->a, key->a, 2); // ensure a is between [1,...(p-1)]
+	mpz_add_ui(key->a, key->a, 1); // ensure a is between [2,...p] (a will almost never actually be 2 or p)
 	
 	gmp_randclear(rand_state);
 	
@@ -80,10 +85,14 @@ void ElGamal_key_free (ElGamalKeyPair *key) {
 	mpz_clear(key->h);
 	mpz_clear(key->a);
 }
+void ElGamal_get_block_size (int *block_size, int *u_block_size, mpz_t q) {
+	*block_size = (int)mpz_sizeinbase(q, 16); // block size for ElGamal, is twice the size of the message to accomodate (c1, c2)
+	*u_block_size = *block_size/2 -1; // block size of message, should be < block_size/2 so that it is less than q
+}
 
 uint8_t *ElGamal_encrypt (const uint8_t *plaintext, size_t *len, mpz_t g, mpz_t h, mpz_t q) {
-	const int block_size = (int)mpz_sizeinbase(q, 16); // block size for ElGamal, is twice the size of the message to accomodate (c1, c2)
-	const int u_block_size = block_size/2 -1; // block size of message, should be < block_size/2 so that it is less than q
+	int block_size, u_block_size;
+	ElGamal_get_block_size(&block_size, &u_block_size, q);
 	
 	uint8_t *buffer = malloc( *len );
 	memcpy(buffer, plaintext, *len);
@@ -100,8 +109,7 @@ uint8_t *ElGamal_encrypt (const uint8_t *plaintext, size_t *len, mpz_t g, mpz_t 
 	
 	gmp_randstate_t rand_state;
 	gmp_randinit_default(rand_state);
-	gmp_randseed_ui(rand_state, 13123123);
-	
+	gmp_randseed_ui(rand_state, 13123123); // TODO; change to something else
 	
 	for (int i = 0; i < blocks;i++) {
 		mpz_urandomm(c1, rand_state, q); // choose a random r between [1,...,(q-1)]
@@ -124,8 +132,8 @@ uint8_t *ElGamal_encrypt (const uint8_t *plaintext, size_t *len, mpz_t g, mpz_t 
 	return buffer;
 }
 uint8_t *ElGamal_decrypt (const uint8_t *ciphertext, size_t *len, mpz_t a, mpz_t q) {
-	const int block_size = (int)mpz_sizeinbase(q, 16); //(int)mpz_sizeinbase(q, 2)/4; // block size for ElGamal, is twice the size of the message to accomodate (c1, c2)
-	const int u_block_size = block_size/2 -1; // block size of message, should be < block_size/2 so that it is less than q
+	int block_size, u_block_size;
+	ElGamal_get_block_size(&block_size, &u_block_size, q);
 	
 	
 	uint8_t *buffer = malloc( *len );
@@ -165,6 +173,7 @@ void testElGamal () {
 	
 	ElGamalKeyPair key;
 	mpz_t plaintexts[num_plaintexts];
+	mpz_t r, s, m;
 	uint8_t *plaintext, *ciphertext, *decryptedtext;
 	
 	gmp_randstate_t rand_state;
@@ -184,6 +193,9 @@ void testElGamal () {
 	for (int i = 0; i < 5;i++) {
 		ElGamal_key_gen(&key, ELGAMAL_512, 0);
 		
+		// the scheme (without hashing) allows for existential forgery, check if correct
+		ElGamal_generate_existential_forge(r, s, m, key.h, key.q, key.g, 0);
+		
 		for (int j = 0; j < num_plaintexts;j++) {
 			plaintext = (uint8_t *)(plaintexts[j]->_mp_d);
 			size_t plaintextlen = (plaintexts[j] -> _mp_size)*sizeof(mp_limb_t);
@@ -198,6 +210,28 @@ void testElGamal () {
 			
 			free(ciphertext);
 			free(decryptedtext);
+			
+			// test ElGamal sign ----
+			
+			// without SHA 256
+			size_t signlen = plaintextlen;
+			// sign using private key
+			ciphertext = ElGamal_signature(plaintext, &signlen, key.g, key.a, key.q, 0);
+			// check if signature is valid
+			int sign_verify = ElGamal_sign_verify(plaintext, plaintextlen, ciphertext, key.h, key.q, key.g, 0);
+			assert( sign_verify == 1 );
+			
+			free(ciphertext);
+			
+			// with SHA 256
+			signlen = plaintextlen;
+			// sign using private key
+			ciphertext = ElGamal_signature(plaintext, &signlen, key.g, key.a, key.q, 1);
+			// check if signature is valid
+			sign_verify = ElGamal_sign_verify(plaintext, plaintextlen, ciphertext, key.h, key.q, key.g, 1);
+			assert( sign_verify == 1 );
+			
+			free(ciphertext);
 		}
 		
 	}
@@ -206,4 +240,7 @@ void testElGamal () {
 	for (int i = 0; i < num_plaintexts;i++) {
 		mpz_clear(plaintexts[i]);
 	}
+	mpz_clear(r);
+	mpz_clear(s);
+	mpz_clear(m);
 }

@@ -1,3 +1,13 @@
+# ElGamal (HW4 1.5)
+
+Please refer to [ElGamalSign.c](Crypto/ElGamal/ElGamalSign.c) for the signing, sign verification & existential forgery functions. I'm using this [library](https://github.com/amosnier/sha-2) for the SHA256 hashing.
+
+1. To sign something, use  ``` uint8_t *ElGamal_signature (const uint8_t *plaintext, size_t *len, mpz_t g, mpz_t a, mpz_t q, int hash_sha256) ```.
+2. To verify a signature, use ``` int ElGamal_sign_verify (const uint8_t *plaintext, size_t plaintextlen, const uint8_t *sign, mpz_t h, mpz_t q, mpz_t g, int hash_sha256) ```.
+3. To generate an existential forgery, use ``` void ElGamal_generate_existential_forge (mpz_t r, mpz_t s, mpz_t m, mpz_t h, mpz_t q, mpz_t g, unsigned long seed) ```.
+4. For a test of the signing, sign verification & existential forgery, please refer to ```testElGamal()``` in [ElGamal.c](Crypto/ElGamal/ElGamal.c).
+5. For a small demo of signing & verification, please refer to [ElGamalProgram.c](Crypto/ElGamalProgram.c).
+
 # ElGamal (HW3 1.10)
 
 To view the implementation of ElGamal, please refer to ElGamal.h & ElGamal.c. There is also a unit test present in the files. It can work with 300 or 512 bit modes.

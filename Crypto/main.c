@@ -41,19 +41,14 @@ void testBreakCaesarCipher () {
     
     breakCaesarCipher(text, textlen, 0);
 }
-void rsa_key_gen () {
-	RSAKeyPair key;
-	RSA_key_init(&key);
-	RSA_key_gen(&key, RSA_1024, 0);
-	RSA_key_free(&key);
-}
-
 int main(int argc, const char * argv[]) {
 	//testRSA();
 	//char* args2[] = { "-keygenerator", "-encrypt" };
 	//runRSAProgram(1, args2);
 	//measure(&rsa_key_gen, 10);
 	testElGamal();
+	
+	//solve_linear_diophantine(539, -1387, 1);
 	
 	return 0;
     //return runRSAProgram(argc, argv);

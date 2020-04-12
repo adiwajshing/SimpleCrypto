@@ -22,12 +22,21 @@ int main (int argc, const char * argv[]) {
 	size_t plaintextlen = strlen(plaintext)+1;
 	
 	printf("plaintext: %s\n", plaintext);
-	printf("encrypting...\n");
+	
+	printf("\nsigning with SHA 256...\n");
+	size_t signlen = plaintextlen;
+	uint8_t *sign = ElGamal_signature((uint8_t *)plaintext, &signlen, key.g, key.a, key.q, 1);
+	printf("signature (hex): "); print_as_hex(sign, (int)signlen); printf("\n");
+	
+	int is_valid = ElGamal_sign_verify((uint8_t *)plaintext, plaintextlen, sign, key.h, key.q, key.g, 1);
+	printf("signature valid: %s", is_valid ? "yes" : "no"); printf("\n");
+	
+	printf("\nencrypting...\n");
 	
 	uint8_t *ciphertext = ElGamal_encrypt((uint8_t *)plaintext, &plaintextlen, key.g, key.h, key.q);
 	printf("ciphertext (hex): "); print_as_hex(ciphertext, (int)plaintextlen); printf("\n");
 	
-	printf("decrypting...\n");
+	printf("\ndecrypting...\n");
 	uint8_t *decryptedtext = ElGamal_decrypt(ciphertext, &plaintextlen, key.a, key.q);
 	
 	printf("decrypted plaintext: %s\n", (char *)decryptedtext);
