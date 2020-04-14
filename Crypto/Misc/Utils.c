@@ -189,3 +189,89 @@ void gen_prime (mpz_t n, unsigned long seed, unsigned int bitlen) {
 		}
 	} while (!mpz_probab_prime_p(n, 20));
 }
+
+void legendre_symbol (mpz_t out, mpz_t n, mpz_t p) {
+	mpz_sub_ui(out, p, 1); // out = p-1
+	mpz_div_ui(out, out, 2); // out = (p-1)/2
+	mpz_powm(out, n, out, p); // out = n^((p-1)/2) mod p
+}
+int mod_square_root (mpz_t out, mpz_t n, mpz_t p) {
+	legendre_symbol(out, n, p);
+	if (mpz_cmp_ui(n,0)==0 || mpz_cmp_ui(out, 1) != 0) {
+		return 0;
+	}
+	
+	if (mpz_mod_ui(out, p, 4)==3) { // if p%4 == 3, then case is simple
+		mpz_add_ui(out, p, 1); // out = p+1
+		mpz_div_ui(out, out, 4); // out = (p+1)/4
+		mpz_powm(out, n, out, p); // out = n^((p+1)/4) mod p
+	} else {
+		mpz_t s, g, b;
+		unsigned long e = 0; // e = 0
+		
+		mpz_init_set(s, p); // s = p
+		mpz_sub_ui(s, s, 1); // s = p-1
+		
+		while (mpz_mod_ui(out, s, 2) == 0) { // check if s % 2 == 0
+			mpz_div_ui(s, s, 2); // s /= 2
+			e += 1;
+		}
+		/*
+		 now p-1 can be written in the form as:
+		 p-1 = s * 2^e
+		*/
+		// calculate a g such that g|p = p-1
+		mpz_init_set_ui(g, 2);
+		while (1) {
+			legendre_symbol(out, g, p);
+			mpz_add_ui(out, out, 1);
+			if (mpz_cmp(out, p) == 0) {
+				break;
+			}
+		}
+		
+		mpz_add_ui(out, s, 1);
+		mpz_div_ui(out, out, 2);
+		mpz_powm(out, n, out, p); // x = x^(s+1)/2 mod p
+		
+		mpz_init_set(b, n);
+		mpz_powm(b, b, s, p); // b = x^s mod p
+		
+		mpz_powm(g, g, s, p); // g = g^s mod p
+		
+		while (1) {
+			mpz_set(s, b);
+			unsigned long m;
+			for (m = 0; m < e; m++) {
+				if (mpz_cmp_ui(s, 1) == 0) { // if s == 1
+					break;
+				}
+				mpz_powm_ui(s, s, 2, p); // s = s^2 mod p
+			}
+			
+			if (m == 0) {
+				break;
+			}
+			
+			mpz_set_ui(s, 2); // s = 2
+			mpz_pow_ui(s, s, e-m-1); // s = 2^(r-m-1)
+			mpz_powm(s, g, s, p); // s = g^(2^(r-m-1)) mod p
+			
+			mpz_powm_ui(g, s, 2, p); // g = s^2 mod p
+			
+			mpz_mul(out, out, s); // g = x * s
+			mpz_mod(out, out, p); // g = x*s mod p
+			
+			mpz_mul(b, b, g); // b = b * g
+			mpz_mod(b, b, p); // b = b*g mod p
+			
+			e = m;
+		}
+		
+		mpz_clear(s);
+		mpz_clear(g);
+		mpz_clear(b);
+	}
+	
+	return 1;
+}

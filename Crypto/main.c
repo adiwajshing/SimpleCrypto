@@ -27,6 +27,7 @@
 #include "RSA.h"
 #include "ASN1.h"
 #include "ElGamal.h"
+#include "Curve.h"
 
 void testBreakVigenereCipher () {
     const char text[] = "qivjukosqegnyiytxypshzewjsnsdpeybsuiranshzewjsnsdvusdvozqhasg hexhvtdrynjyirlrrnfpekjbsuhucnjyirlrrnfveylrsdgbinjyirlrrnfwi lqbsuqlisfqhhzuxytxaewhroxwvasjirxwsltyiytxontzxhjuyljvenivsd tlectpqiypinylwwmdxirosoplrgkrvytxaoswkeywlixivordrytwlewjyyn mysyzensdxeqocozkswnpjejomnlzensdqaphcozxrdjuwtfqhnjyirlrrnfj mvjbsuzsreahvgtqraqhxytxhobq";
@@ -46,8 +47,8 @@ int main(int argc, const char * argv[]) {
 	//char* args2[] = { "-keygenerator", "-encrypt" };
 	//runRSAProgram(1, args2);
 	//measure(&rsa_key_gen, 10);
-	testElGamal();
-	
+	//testElGamal();
+	curve_test();
 	//solve_linear_diophantine(539, -1387, 1);
 	
 	return 0;

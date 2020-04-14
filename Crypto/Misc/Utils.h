@@ -38,6 +38,9 @@ uint8_t *get_text(const char *filename, size_t *rlen, int mode);
 int set_text(const char *filename, uint8_t *str, size_t len, int mode);
 
 double measure (void (*function)(void), int iterations);
+/// generate an odd prime of given bit length
 void gen_prime (mpz_t n, unsigned long seed, unsigned int bitlen);
+/// find the square root of n mod p, if it exists. returns 0 if square root does not exist
+int mod_square_root (mpz_t out, mpz_t n, mpz_t p);
 
 #endif /* Utils_h */
