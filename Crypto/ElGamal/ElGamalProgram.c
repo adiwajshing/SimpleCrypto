@@ -12,7 +12,7 @@
 #include "ElGamal.h"
 #include "Utils.h"
 
-int main (int argc, const char * argv[]) {
+int run_ElGamalProgram (int argc, const char * argv[]) {
 	ElGamalKeyPair key;
 	ElGamal_key_init(&key);
 	
@@ -40,4 +40,5 @@ int main (int argc, const char * argv[]) {
 	uint8_t *decryptedtext = ElGamal_decrypt(ciphertext, &plaintextlen, key.a, key.q);
 	
 	printf("decrypted plaintext: %s\n", (char *)decryptedtext);
+	return 0;
 }

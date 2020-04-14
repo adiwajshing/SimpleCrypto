@@ -12,6 +12,7 @@
 		891ED42E2430837700284F9F /* ASN1.c in Sources */ = {isa = PBXBuildFile; fileRef = 891ED42D2430837700284F9F /* ASN1.c */; };
 		891ED43024308C6E00284F9F /* UtilsBase64.c in Sources */ = {isa = PBXBuildFile; fileRef = 891ED42F24308C6E00284F9F /* UtilsBase64.c */; };
 		891ED4392430D26300284F9F /* ElGamal.c in Sources */ = {isa = PBXBuildFile; fileRef = 891ED4382430D26300284F9F /* ElGamal.c */; };
+		894D81C82446348800D6A068 /* ElGamalProgram.c in Sources */ = {isa = PBXBuildFile; fileRef = 891ED43A2430F0C900284F9F /* ElGamalProgram.c */; };
 		896ABFEA23F6B02A00F3D02A /* ColumnarTranspositionCipher.c in Sources */ = {isa = PBXBuildFile; fileRef = 896ABFE923F6B02A00F3D02A /* ColumnarTranspositionCipher.c */; };
 		896ABFED23F6B8F000F3D02A /* AffineCipher.c in Sources */ = {isa = PBXBuildFile; fileRef = 896ABFEC23F6B8F000F3D02A /* AffineCipher.c */; };
 		896ABFF023F6BCBB00F3D02A /* HillCipher.c in Sources */ = {isa = PBXBuildFile; fileRef = 896ABFEF23F6BCBB00F3D02A /* HillCipher.c */; };
@@ -126,6 +127,7 @@
 				891ED4372430D26300284F9F /* ElGamal.h */,
 				891ED4382430D26300284F9F /* ElGamal.c */,
 				89AE995124420AA60087AB5C /* ElGamalSign.c */,
+				891ED43A2430F0C900284F9F /* ElGamalProgram.c */,
 			);
 			path = ElGamal;
 			sourceTree = "<group>";
@@ -155,7 +157,6 @@
 				891ED42B242F7B8000284F9F /* Crypto.entitlements */,
 				896ABFE123F5E15700F3D02A /* main.c */,
 				891ED4312430B0B500284F9F /* RSAProgram.c */,
-				891ED43A2430F0C900284F9F /* ElGamalProgram.c */,
 				891ED423242F398B00284F9F /* number_theory.h */,
 				89EECAEE240A2F7F00040CED /* PrimitiveCiphers */,
 				89EECAF3240A6D0700040CED /* Misc */,
@@ -296,6 +297,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				894D81C82446348800D6A068 /* ElGamalProgram.c in Sources */,
 				896ABFED23F6B8F000F3D02A /* AffineCipher.c in Sources */,
 				89EECAE62407969100040CED /* Utils.c in Sources */,
 				89AE995224420AA60087AB5C /* ElGamalSign.c in Sources */,

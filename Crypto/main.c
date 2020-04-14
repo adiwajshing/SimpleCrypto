@@ -49,7 +49,7 @@ int main(int argc, const char * argv[]) {
 	//measure(&rsa_key_gen, 10);
 	//testElGamal();
 	curve_test();
-	//solve_linear_diophantine(539, -1387, 1);
+	run_ElGamalProgram(argc, argv);
 	
 	return 0;
     //return runRSAProgram(argc, argv);

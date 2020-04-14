@@ -44,15 +44,21 @@ void curve_test_gen_y (void) {
 	curve_set_params_P192();
 	
 	mpz_t x, y, y1, y2;
+	mpz_init(x);
+	mpz_init(y);
 	mpz_init(y1);
 	mpz_init(y2);
 	for (int i = 0; i < num_test_vectors;i++) {
-		mpz_init_set_str(x, testvectors[i][0], 16);
-		mpz_init_set_str(y, testvectors[i][1], 16);
+		mpz_set_str(x, testvectors[i][0], 16);
+		mpz_set_str(y, testvectors[i][1], 16);
 		
-		assert(curve_init_get_y(y1, y2, x) == 1);
+		assert(curve_get_y(y1, y2, x) == 1);
 		assert(mpz_cmp(y1, y) == 0 || mpz_cmp(y2, y) == 0); // y should equal either one of the roots
 	}
+	// run a small test to check that our infinity (0,0) does not lie on the curve
+	mpz_set(x, curve_inf->x);
+	assert(curve_get_y(y1, y2, x) == 0 || (mpz_cmp(y1, curve_inf->y) != 0 && mpz_cmp(y2, curve_inf->y) != 0));
+	
 	mpz_clear(x);
 	mpz_clear(y);
 	mpz_clear(y1);
@@ -182,25 +188,31 @@ void curve_test_arithmetic (void) {
 	CurvePoint p, q, r, rcheck;
 	mpz_t k;
 	
+	curve_init(p);
+	curve_init(q);
+	curve_init(r);
+	curve_init(rcheck);
+	mpz_init(k);
+	
 	for (int i = 0; i < num_add_test_vectors;i++) {
-		curve_init_set_str(p, add_testvectors[i][0], add_testvectors[i][1], 16); // set P
-		curve_init_set_str(q, add_testvectors[i][2], add_testvectors[i][3], 16); // set Q
-		curve_init_set_str(rcheck, add_testvectors[i][4], add_testvectors[i][5], 16); // set R'
+		curve_set_str(p, add_testvectors[i][0], add_testvectors[i][1], 16); // set P
+		curve_set_str(q, add_testvectors[i][2], add_testvectors[i][3], 16); // set Q
+		curve_set_str(rcheck, add_testvectors[i][4], add_testvectors[i][5], 16); // set R'
 		
-		curve_add(p, q, r); // actually do the multiplication
+		curve_add(r, p, q); // actually do the multiplication
 		
 		assert(curve_cmp(r, rcheck) == 0); // check if R is correct
 		
-		curve_sub(rcheck, q, r); // Also, then R-Q = P
+		curve_sub(r, rcheck, q); // Also, then R-Q = P
 		
 		assert(curve_cmp(r, p) == 0); // check if result is correct
 	}
 	for (int i = 0; i < num_mul_test_vectors;i++) {
-		curve_init_set_str(p, mul_testvectors[i][0], mul_testvectors[i][1], 16); // set P
-		mpz_init_set_str(k, mul_testvectors[i][2], 10); // set k
-		curve_init_set_str(rcheck, mul_testvectors[i][3], mul_testvectors[i][4], 16); // set R'
+		curve_set_str(p, mul_testvectors[i][0], mul_testvectors[i][1], 16); // set P
+		mpz_set_str(k, mul_testvectors[i][2], 10); // set k
+		curve_set_str(rcheck, mul_testvectors[i][3], mul_testvectors[i][4], 16); // set R'
 		
-		curve_mul(p, k, r); // actually do the multiplication
+		curve_mul(r, p, k); // actually do the multiplication
 		
 		assert( curve_cmp(r, rcheck) == 0 ); // ensure results match
 	}
@@ -210,6 +222,7 @@ void curve_test_inp_out (void) {
 	curve_set_params_P192();
 	
 	CurvePoint p, p2;
+	curve_init(p2);
 	curve_init_set_str(p,
 					   "188DA80EB03090F67CBF20EB43A18800F4FF0AFD82FF1012",
 					   "07192B95FFC8DA78631011ED6B24CDD573F977A11E794811", 16);
@@ -218,12 +231,16 @@ void curve_test_inp_out (void) {
 	fclose(f);
 	
 	f = fopen("curve_test.txt", "r");
-	curve_inp_str(f, 16, p2);
+	assert(curve_inp_str(f, 16, p2)==1);
 	assert(curve_cmp(p, p2) == 0);
+	fclose(f);
 }
 /// run all tests
 void curve_test (void) {
 	curve_test_gen_y();
+	printf("CURVE: generating y value from x test success\n");
 	curve_test_arithmetic();
+	printf("CURVE: addition & multiplication test success\n");
 	curve_test_inp_out();
+	printf("CURVE: stream IO test success\n");
 }

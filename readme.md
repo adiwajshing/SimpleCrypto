@@ -7,6 +7,7 @@ Please refer to [ElGamalSign.c](Crypto/ElGamal/ElGamalSign.c) for all signing, s
 3. To generate an existential forgery, use ``` void ElGamal_generate_existential_forge (mpz_t r, mpz_t s, mpz_t m, mpz_t h, mpz_t q, mpz_t g, unsigned long seed) ```.
 4. For a test of the signing, sign verification & existential forgery, please refer to ```testElGamal()``` in [ElGamal.c](Crypto/ElGamal/ElGamal.c).
 5. For a small demo of signing & verification, please refer to [ElGamalProgram.c](Crypto/ElGamalProgram.c).
+6. To compile, you will need GMP installed on your system. Given this, the build system is Xcode so all you need to do is open the __Crypto.xcodeproj__ file with Xcode and click Run. This will run the ElGamal encryption/decryption/signing demo along with the curve tests.
 
 # Curve (HW4 4.4)
 
@@ -15,9 +16,16 @@ Please refer to [CurveTest.c](Crypto/Curve/CurveTest.c) for unit tests of curve 
 
 The curve can be setup either as an [M-221](https://safecurves.cr.yp.to) curve or a [P-192](https://csrc.nist.gov/csrc/media/publications/fips/186/2/archive/2000-01-27/documents/fips186-2.pdf) curve.
 
-1. Each function in [Curve.h](Crypto/Curve/Curve.h) has a comment above it pointing to the correct question part.
-2. 
-
+1. The syntax for the Curve library is very similar to the GMP syntax. Examples include:
+	-To init from a string, ``` mpz_init_set_str(ptr, "12312", 10) ``` becomes ``` curve_init_set_str(curvePtr, "12312", "312123", 10) ```
+	-To add, ``` mpz_add(result, ptr1, ptr2) ``` becomes ``` curve_add(result, curvePtr1, curvePtr1) ```
+	-To multiply, ``` mpz_mul(result, ptr1, ptr2) ``` becomes ``` curve_mul(result, curvePtr, k) ```
+	And so on, please see [Curve.h](Crypto/Curve/Curve.h) for a list of all the functions.
+2. The main program runs the Curve Test suite. This can also be called via the ``` curve_test() ``` function imported from [Curve.h](Crypto/Curve/Curve.h).
+3. Each function in [Curve.h](Crypto/Curve/Curve.h) has a comment above it pointing to the correct question part.
+4. The Curve functions are tested on the P-192 curve using test vectors from [here](http://point-at-infinity.org/ecc/nisttv).
+5. The project includes all header & source files. Though, to compile, you will need GMP installed on your system. Given this, the build system is Xcode so all you need to do is open the __Crypto.xcodeproj__ file with Xcode and click Run. This will run the curve test suite.
+6. There are no known issues with the code.
 
 # ElGamal (HW3 3.10)
 

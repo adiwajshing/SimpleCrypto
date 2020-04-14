@@ -48,4 +48,7 @@ void ElGamal_generate_existential_forge (mpz_t r, mpz_t s, mpz_t m, mpz_t h, mpz
 void ElGamal_get_block_size (int *block_size, int *u_block_size, mpz_t q);
 
 void testElGamal (void);
+
+int run_ElGamalProgram (int argc, const char * argv[]);
+
 #endif /* ElGamal_h */
